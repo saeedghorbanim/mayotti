@@ -27,7 +27,7 @@ interface OnboardingState {
   answers: OnboardingAnswers;
 }
 
-const ONBOARDING_KEY = "savicash_onboarding";
+const ONBOARDING_KEY = "mayotti_onboarding";
 
 const defaultAnswers: OnboardingAnswers = {
   gender: null,

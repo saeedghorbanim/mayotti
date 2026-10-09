@@ -51,7 +51,7 @@ export const ProfileMenu = ({ onShowPaywall }: ProfileMenuProps) => {
             <div className="flex flex-col space-y-1">
               <p className="text-sm font-medium leading-none">{profile.name}</p>
               <p className="text-xs leading-none text-muted-foreground">
-                SaviCash User
+                Mayotti User
               </p>
             </div>
           </DropdownMenuLabel>
@@ -66,13 +66,13 @@ export const ProfileMenu = ({ onShowPaywall }: ProfileMenuProps) => {
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
-            <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/" target="_blank" rel="noopener noreferrer" className="flex items-center">
+            <a href="https://mayotti.com/terms" target="_blank" rel="noopener noreferrer" className="flex items-center">
               <FileText className="mr-2 h-4 w-4" />
               <span>Terms of Use</span>
             </a>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
-            <a href="https://actually-stream-310.notion.site/Privacy-Policy-2ebb24b54ac180d9815bca838b4263ee" target="_blank" rel="noopener noreferrer" className="flex items-center">
+            <a href="https://mayotti.com/privacy" target="_blank" rel="noopener noreferrer" className="flex items-center">
               <Shield className="mr-2 h-4 w-4" />
               <span>Privacy Policy</span>
             </a>

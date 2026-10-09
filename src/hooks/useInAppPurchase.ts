@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Purchases } from '@revenuecat/purchases-capacitor';
 import { Capacitor } from '@capacitor/core';
 
-export const SUBSCRIPTION_PRODUCT_ID = 'com.savicash.subscription.monthly';
+export const SUBSCRIPTION_PRODUCT_ID = 'com.mayotti.subscription.monthly';
 const ENTITLEMENT_ID = 'premium';
 
 interface PurchaseState {

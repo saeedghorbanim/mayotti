@@ -31,7 +31,7 @@ const ANALYZE_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/analyze-r
 const initialMessages: Message[] = [
   {
     id: "1",
-    content: "Hi! I'm SaviCash, your friendly budget buddy! 💰 Just tell me what you spent and I'll help you track it. You can type, use voice 🎤, or snap a photo of your receipt 📸!",
+    content: "Hi! I'm Mayotti, your friendly budget buddy! 💰 Just tell me what you spent and I'll help you track it. You can type, use voice 🎤, or snap a photo of your receipt 📸!",
     role: "assistant",
     timestamp: new Date(),
   },
@@ -94,7 +94,7 @@ export const ChatView = ({ budget, onAddExpense, onSetBudgetLimit, onShowPaywall
   // Read latest budget from localStorage and update local state immediately
   const refreshLocalBudget = () => {
     try {
-      const stored = localStorage.getItem('savicash_budget');
+      const stored = localStorage.getItem('mayotti_budget');
       if (stored) setLocalBudget(JSON.parse(stored));
     } catch {}
   };

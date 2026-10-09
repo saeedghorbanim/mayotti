@@ -39,11 +39,11 @@
       "localizations" : [
         {
           "description" : "",
-          "displayName" : "savicash Premium Subscription",
+          "displayName" : "Mayotti Premium Subscription",
           "locale" : "en_US"
         }
       ],
-      "name" : "SaviCash Premium",
+      "name" : "Mayotti Premium",
       "subscriptions" : [
         {
           "adHocOffers" : [
@@ -62,11 +62,11 @@
           "localizations" : [
             {
               "description" : "30 usage and smart budgeting insights.",
-              "displayName" : "SaviCash Premium",
+              "displayName" : "Mayotti Premium",
               "locale" : "en_US"
             }
           ],
-          "productID" : "com.savicash.subscription.monthly",
+          "productID" : "com.mayotti.subscription.monthly",
           "recurringSubscriptionPeriod" : "P1M",
           "referenceName" : "Monthly Premium",
           "subscriptionGroupID" : "21895635",

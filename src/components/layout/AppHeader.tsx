@@ -22,7 +22,7 @@ export const AppHeader = ({ monthlyTotal, onShowPaywall }: AppHeaderProps) => {
             <DollarSign className="w-5 h-5" />
           </div>
           <div>
-            <h1 className="font-display font-bold text-lg">SaviCash</h1>
+            <h1 className="font-display font-bold text-lg">Mayotti</h1>
             <p className="text-xs opacity-90">Save Smart, Live Better</p>
           </div>
         </div>

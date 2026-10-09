@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Eye, Gauge, PiggyBank } from "lucide-react";
-import appIcon from "@/assets/savicash-logo.png";
+import appIcon from "@/assets/mayotti-logo.png";
 
 const highlights = [
   { icon: Eye, label: "Track spending in plain English" },
@@ -13,7 +13,7 @@ export const GetStartedSlide = () => {
     <div className="min-h-full flex flex-col items-center justify-center text-center py-8">
       <motion.img
         src={appIcon}
-        alt="SaviCash"
+        alt="Mayotti"
         initial={{ opacity: 0, scale: 0.8, y: 12 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
@@ -25,7 +25,7 @@ export const GetStartedSlide = () => {
         transition={{ delay: 0.15, duration: 0.4 }}
         className="font-display text-3xl font-bold text-foreground mb-2"
       >
-        SaviCash
+        Mayotti
       </motion.h1>
       <motion.p
         initial={{ opacity: 0, y: 10 }}

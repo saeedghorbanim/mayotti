@@ -9,7 +9,7 @@ const steps = [
   },
   {
     icon: Gauge,
-    title: "SaviCash tracks it instantly",
+    title: "Mayotti tracks it instantly",
     description: "Every expense is categorized and checked against your budget in real time.",
   },
   {

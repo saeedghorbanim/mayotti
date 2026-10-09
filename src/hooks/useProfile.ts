@@ -5,7 +5,7 @@ interface Profile {
   avatarUrl: string | null;
 }
 
-const PROFILE_STORAGE_KEY = "savicash_profile";
+const PROFILE_STORAGE_KEY = "mayotti_profile";
 
 const defaultProfile: Profile = {
   name: "User",

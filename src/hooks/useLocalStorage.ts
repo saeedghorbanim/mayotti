@@ -17,9 +17,9 @@ export interface BudgetLimit {
   period: string;
 }
 
-const EXPENSES_KEY = 'savicash_expenses';
-const BUDGET_KEY = 'savicash_budget';
-const BUDGET_RESET_KEY = 'savicash_budget_last_reset';
+const EXPENSES_KEY = 'mayotti_expenses';
+const BUDGET_KEY = 'mayotti_budget';
+const BUDGET_RESET_KEY = 'mayotti_budget_last_reset';
 
 export const useLocalStorage = () => {
   const [expenses, setExpenses] = useState<Expense[]>(() => {

@@ -9,7 +9,7 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const systemPrompt = `You are SaviCash, a friendly and supportive AI budget assistant. You talk like a close friend who genuinely cares about helping users manage their money better.
+const systemPrompt = `You are Mayotti, a friendly and supportive AI budget assistant. You talk like a close friend who genuinely cares about helping users manage their money better.
 
 Your personality:
 - Warm, encouraging, and conversational

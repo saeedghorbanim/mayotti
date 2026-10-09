@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-const PROMPT_USAGE_KEY = 'savicash_prompt_usage';
+const PROMPT_USAGE_KEY = 'mayotti_prompt_usage';
 
 interface PromptUsageData {
   count: number;
@@ -152,7 +152,7 @@ export const usePromptLimit = () => {
     const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
     const daysUntilReset = Math.ceil((nextMonth.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
     
-    return `Hey there! 🌟 You've used all ${MONTHLY_PROMPT_LIMIT} of your AI messages for this month. Don't worry though - your messages will refresh in ${daysUntilReset} day${daysUntilReset === 1 ? '' : 's'} when the new month starts! In the meantime, you can still view your expense history and stats. Thanks for being a SaviCash user! 💚`;
+    return `Hey there! 🌟 You've used all ${MONTHLY_PROMPT_LIMIT} of your AI messages for this month. Don't worry though - your messages will refresh in ${daysUntilReset} day${daysUntilReset === 1 ? '' : 's'} when the new month starts! In the meantime, you can still view your expense history and stats. Thanks for being a Mayotti user! 💚`;
   };
 
   return {

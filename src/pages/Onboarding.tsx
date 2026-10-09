@@ -135,7 +135,7 @@ const QUESTIONS: (QuestionConfig & { required: boolean })[] = [
   },
   {
     id: "primaryGoal",
-    question: "What do you want most from SaviCash?",
+    question: "What do you want most from Mayotti?",
     inputType: "single-select",
     required: true,
     options: [
@@ -173,7 +173,7 @@ const ONBOARDING_STEPS: OnboardingStep[] = [
     kind: "welcome",
     icon: Eye,
     title: "See every dollar clearly.",
-    subtitle: "Just tell SaviCash what you spent in plain English — no spreadsheets, no manual categorizing.",
+    subtitle: "Just tell Mayotti what you spent in plain English — no spreadsheets, no manual categorizing.",
     accent: "primary",
   },
   {
@@ -187,7 +187,7 @@ const ONBOARDING_STEPS: OnboardingStep[] = [
     kind: "welcome",
     icon: PiggyBank,
     title: "Build savings on autopilot.",
-    subtitle: "SaviCash spots recurring costs and shows you exactly where to cut back to hit your goals.",
+    subtitle: "Mayotti spots recurring costs and shows you exactly where to cut back to hit your goals.",
     accent: "primary",
   },
   { kind: "getstarted" },
@@ -195,7 +195,7 @@ const ONBOARDING_STEPS: OnboardingStep[] = [
   {
     kind: "insight",
     title: "See where your money goes",
-    subtitle: "SaviCash automatically breaks down your spending by category.",
+    subtitle: "Mayotti automatically breaks down your spending by category.",
     Component: SpendingBreakdownInsight,
   },
   {
@@ -207,7 +207,7 @@ const ONBOARDING_STEPS: OnboardingStep[] = [
   {
     kind: "insight",
     title: "Effortless money management",
-    subtitle: "Here's how SaviCash keeps you on track.",
+    subtitle: "Here's how Mayotti keeps you on track.",
     Component: HowItWorksInsight,
   },
   { kind: "calculating" },

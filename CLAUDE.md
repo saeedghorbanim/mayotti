@@ -23,7 +23,7 @@ npx cap open android # Open in Android Studio
 
 ## Architecture
 
-**SaviCash** is a mobile-first AI expense tracker built with React + TypeScript + Vite, wrapped with Capacitor for iOS/Android deployment.
+**Mayotti** is a mobile-first AI expense tracker built with React + TypeScript + Vite, wrapped with Capacitor for iOS/Android deployment.
 
 ### Data Flow
 
@@ -41,7 +41,7 @@ All user data (expenses, budget, onboarding answers, subscription status) lives 
 
 ### Onboarding Flow
 
-- Gated in `src/App.tsx` on `useOnboarding().hasCompletedOnboarding` (localStorage key `savicash_onboarding`): the root route renders `Onboarding` instead of `Index` until it's marked complete
+- Gated in `src/App.tsx` on `useOnboarding().hasCompletedOnboarding` (localStorage key `mayotti_onboarding`): the root route renders `Onboarding` instead of `Index` until it's marked complete
 - `src/pages/Onboarding.tsx` drives one flat, data-driven array of 19 steps: 3 welcome slides (each with a "Skip" button straight to Get Started, in addition to Continue) → a branded "Get Started" / "Already got an account? Log in" screen → 10 personalization questions → 3 chart/insight payoff slides → an auto-playing "calculating your plan" slide → a final results/roadmap slide with the real completion CTA
 - Only the 10 questions + 3 insight slides count toward the "Step X of 13" progress bar shown in `OnboardingShell` — the welcome slides, Get Started screen, and the calculating/results epilogue are outside that count and show no numeric progress
 - The `incomeRange` question is required (like most others) but always includes a "Prefer not to say" option, so nobody is forced to disclose income — they just have to actively choose something before Continue enables. `gender` and `monthlySavingsGoal` remain the only genuinely optional questions.
@@ -59,7 +59,7 @@ All user data (expenses, budget, onboarding answers, subscription status) lives 
 - The paywall UI itself is **not built in this repo** — it's designed remotely in the RevenueCat dashboard (Paywalls builder) and rendered natively via `RevenueCatUI.presentPaywall()` from `@revenuecat/purchases-capacitor-ui`. Changing paywall copy/pricing/layout does not require an app update.
 - `usePaywall` (`src/hooks/usePaywall.ts`) wraps `RevenueCatUI.presentPaywall()`; treats `PAYWALL_RESULT.PURCHASED`/`RESTORED` as success and calls the `onPurchased` callback (typically `useAppUsage().setSubscriptionActive`). Used both by the mandatory `HardPaywallGate` and by voluntary triggers (Settings' "Upgrade to Pro", `ChatView`'s monthly AI-prompt cap).
 - `usePromptLimit` (`MONTHLY_PROMPT_LIMIT = 30`) is unrelated to the paywall gate — it's a separate monthly rate limit on AI calls that applies to subscribers, to control API cost.
-- RevenueCat (`@revenuecat/purchases-capacitor` + `@revenuecat/purchases-capacitor-ui`, both pinned to the same version — currently `13.5.1`) handles IAP and the paywall UI; product ID `com.savicash.subscription.monthly`; entitlement identifier `premium`.
+- RevenueCat (`@revenuecat/purchases-capacitor` + `@revenuecat/purchases-capacitor-ui`, both pinned to the same version — currently `13.5.1`) handles IAP and the paywall UI; product ID `com.mayotti.subscription.monthly`; entitlement identifier `premium`.
 - `useAppUsage` now tracks **subscription status only** (no usage-count/free-limit machinery) — validated against RevenueCat on native, always cleared on web/simulator.
 
 #### RevenueCat Configuration

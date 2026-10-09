@@ -76,7 +76,7 @@ const handleAddExpense = (expense: Parameters<typeof addExpense>[0]) => {
   // CRITICAL: Read current count directly from localStorage
   let currentCount = 0;
   try {
-    const stored = localStorage.getItem('savicash_app_usage');
+    const stored = localStorage.getItem('mayotti_app_usage');
     if (stored) {
       const parsed = JSON.parse(stored);
       currentCount = typeof parsed.usageCount === 'number' ? parsed.usageCount : 0;

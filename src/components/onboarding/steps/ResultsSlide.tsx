@@ -69,7 +69,7 @@ export const ResultsSlide = ({ answers }: ResultsSlideProps) => {
       </div>
 
       <p className="text-muted-foreground text-sm mb-3 px-4">
-        Here's what you stand to gain by following your <span className="font-semibold text-primary">SaviCash</span>{" "}
+        Here's what you stand to gain by following your <span className="font-semibold text-primary">Mayotti</span>{" "}
         plan
       </p>
 

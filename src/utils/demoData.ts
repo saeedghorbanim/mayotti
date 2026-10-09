@@ -61,8 +61,8 @@ export const loadDemoData = (): { expenses: Expense[]; budget: BudgetLimit } => 
   const budget = generateDemoBudget(totalSpent);
   
   // Save to localStorage
-  localStorage.setItem('savicash_expenses', JSON.stringify(expenses));
-  localStorage.setItem('savicash_budget', JSON.stringify(budget));
+  localStorage.setItem('mayotti_expenses', JSON.stringify(expenses));
+  localStorage.setItem('mayotti_budget', JSON.stringify(budget));
 
   // Set as subscribed so the paywall doesn't show
   const subscriptionData = {
@@ -71,14 +71,14 @@ export const loadDemoData = (): { expenses: Expense[]; budget: BudgetLimit } => 
     expiresAt: null,
     productId: 'demo_mode',
   };
-  localStorage.setItem('savicash_subscription', JSON.stringify(subscriptionData));
+  localStorage.setItem('mayotti_subscription', JSON.stringify(subscriptionData));
   
   return { expenses, budget };
 };
 
 // Clear demo data
 export const clearDemoData = () => {
-  localStorage.removeItem('savicash_expenses');
-  localStorage.removeItem('savicash_budget');
-  localStorage.removeItem('savicash_subscription');
+  localStorage.removeItem('mayotti_expenses');
+  localStorage.removeItem('mayotti_budget');
+  localStorage.removeItem('mayotti_subscription');
 };

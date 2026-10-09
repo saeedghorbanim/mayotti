@@ -71,7 +71,7 @@ export const SettingsDialog = ({ open, onOpenChange, onShowPaywall }: SettingsDi
                 <div className="flex items-center gap-2">
                   <CreditCard className="h-4 w-4 text-primary" />
                   <span className="font-medium">
-                    {subscription.isSubscribed ? "SaviCash Pro" : "Free Plan"}
+                    {subscription.isSubscribed ? "Mayotti Pro" : "Free Plan"}
                   </span>
                 </div>
                 {subscription.isSubscribed && (

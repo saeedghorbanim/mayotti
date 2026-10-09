@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Purchases } from '@revenuecat/purchases-capacitor';
 import { Capacitor } from '@capacitor/core';
 
-const SUBSCRIPTION_KEY = 'savicash_subscription';
+const SUBSCRIPTION_KEY = 'mayotti_subscription';
 
 interface SubscriptionData {
   isSubscribed: boolean;

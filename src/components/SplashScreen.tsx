@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import splashImage from '@/assets/savicash-splash.png';
+import splashImage from '@/assets/mayotti-splash.png';
 
 interface SplashScreenProps {
   onComplete: () => void;
@@ -32,7 +32,7 @@ const SplashScreen = ({ onComplete, duration = 2500 }: SplashScreenProps) => {
     >
       <img 
         src={splashImage} 
-        alt="SaviCash" 
+        alt="Mayotti" 
         className="w-full h-full object-cover"
       />
     </div>

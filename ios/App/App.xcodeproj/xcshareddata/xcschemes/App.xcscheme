@@ -58,7 +58,7 @@
          </EnvironmentVariable>
       </EnvironmentVariables>
       <StoreKitConfigurationFileReference
-         identifier = "../../App/savicash.storekit">
+         identifier = "../../App/mayotti.storekit">
       </StoreKitConfigurationFileReference>
    </LaunchAction>
    <ProfileAction

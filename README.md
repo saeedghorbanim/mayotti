@@ -1,6 +1,6 @@
-# SaviCash - Smart Expense Tracker
+# Mayotti - Smart Expense Tracker
 
-SaviCash is an AI-powered expense tracking app that helps you manage your finances effortlessly with voice input, receipt scanning, and intelligent insights.
+Mayotti is an AI-powered expense tracking app that helps you manage your finances effortlessly with voice input, receipt scanning, and intelligent insights.
 
 ## Project info
 
