@@ -10,15 +10,15 @@ interface HistoryViewProps {
 // Get color based on category
 const getCategoryColor = (category: string | null) => {
   const colors: Record<string, string> = {
-    food: "bg-orange-500",
-    dining: "bg-orange-500",
-    transport: "bg-blue-500",
-    transportation: "bg-blue-500",
-    shopping: "bg-purple-500",
-    entertainment: "bg-red-500",
-    groceries: "bg-green-500",
-    utilities: "bg-yellow-500",
-    health: "bg-pink-500",
+    food: "bg-teal-600",
+    dining: "bg-teal-600",
+    transport: "bg-blue-600",
+    transportation: "bg-blue-600",
+    shopping: "bg-violet-500",
+    entertainment: "bg-pink-500",
+    groceries: "bg-primary",
+    utilities: "bg-slate-500",
+    health: "bg-cyan-600",
   };
   const cat = (category || "other").toLowerCase();
   return colors[cat] || "bg-muted-foreground";
@@ -128,7 +128,7 @@ export const HistoryView = ({ expenses, onDeleteExpense }: HistoryViewProps) => 
                     </p>
                     <button
                       onClick={() => onDeleteExpense(item.id)}
-                      className="text-red-500 hover:text-red-600 transition-colors p-1"
+                      className="text-destructive hover:opacity-80 transition-opacity p-1"
                     >
                       <Trash2 className="w-4 h-4 sm:w-5 sm:h-5" />
                     </button>

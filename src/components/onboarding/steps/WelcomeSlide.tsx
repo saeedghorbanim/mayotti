@@ -11,12 +11,12 @@ interface WelcomeSlideProps {
 
 const accentClasses: Record<WelcomeSlideProps["accent"], { badge: string; blob: string; icon: string }> = {
   primary: {
-    badge: "from-primary/20 to-primary/5",
+    badge: "bg-accent",
     blob: "bg-primary/30",
     icon: "text-primary",
   },
   success: {
-    badge: "from-success/20 to-success/5",
+    badge: "bg-accent",
     blob: "bg-success/30",
     icon: "text-success",
   },
@@ -49,7 +49,7 @@ export const WelcomeSlide = ({ icon: Icon, title, subtitle, accent }: WelcomeSli
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
           className={cn(
-            "relative w-28 h-28 rounded-full flex items-center justify-center bg-gradient-to-br",
+            "relative w-28 h-28 rounded-full flex items-center justify-center",
             classes.badge
           )}
         >

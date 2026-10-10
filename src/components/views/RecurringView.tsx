@@ -112,9 +112,9 @@ export const RecurringView = ({ expenses }: RecurringViewProps) => {
   };
 
   const getFrequencyColor = (freq: "weekly" | "biweekly" | "monthly") => {
-    if (freq === "weekly") return "bg-blue-100 text-blue-800";
-    if (freq === "biweekly") return "bg-purple-100 text-purple-800";
-    return "bg-green-100 text-green-800";
+    if (freq === "weekly") return "bg-secondary text-foreground";
+    if (freq === "biweekly") return "bg-secondary text-foreground";
+    return "bg-accent text-accent-foreground";
   };
 
   return (

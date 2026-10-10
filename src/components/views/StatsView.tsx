@@ -118,11 +118,11 @@ export const StatsView = ({ expenses }: StatsViewProps) => {
   // Assign colors
   const categoryColors = [
     "bg-primary",
-    "bg-emerald-500",
-    "bg-blue-500",
-    "bg-purple-500",
-    "bg-orange-500",
+    "bg-teal-600",
+    "bg-blue-600",
+    "bg-violet-500",
     "bg-pink-500",
+    "bg-cyan-600",
     "bg-muted-foreground",
   ];
 
@@ -182,9 +182,9 @@ export const StatsView = ({ expenses }: StatsViewProps) => {
       </div>
 
       {percentChange < 0 && thisMonthExpenses.length > 0 && (
-        <Card className="p-4 bg-primary/10 border-primary/20">
-          <p className="text-sm text-primary font-medium">
-            💡 You're spending {Math.abs(percentChange).toFixed(0)}% less than last month. Keep it up!
+        <Card className="px-4 py-3.5 bg-accent border-0 shadow-none rounded-[18px]">
+          <p className="text-sm leading-5 text-accent-foreground font-medium">
+            <strong className="font-bold">Nice work.</strong> You're spending {Math.abs(percentChange).toFixed(0)}% less than last month. Keep it up!
           </p>
         </Card>
       )}
@@ -201,13 +201,13 @@ export const StatsView = ({ expenses }: StatsViewProps) => {
         return (
           <div className="space-y-3">
             <div className="flex items-center gap-2">
-              <Lightbulb className="h-4 w-4 text-amber-500" />
-              <h2 className="text-lg font-semibold">Saving Tips</h2>
+              <Lightbulb className="h-4 w-4 text-primary" />
+              <h2 className="text-[17px] font-bold">Saving tips</h2>
             </div>
             {tips.map((tip, index) => (
-              <Card key={index} className="p-4 bg-amber-500/10 border-amber-500/20">
-                <p className="text-sm text-amber-700 dark:text-amber-400 font-medium">
-                  💰 {tip}
+              <Card key={index} className="px-4 py-3.5 bg-accent border-0 shadow-none rounded-[18px]">
+                <p className="text-sm leading-5 text-accent-foreground font-medium">
+                  {tip}
                 </p>
               </Card>
             ))}
@@ -216,7 +216,7 @@ export const StatsView = ({ expenses }: StatsViewProps) => {
       })()}
 
       <p className="text-xs text-center text-muted-foreground">
-        📱 All data stored locally on your device
+        All data stays on your device
       </p>
     </div>
   );

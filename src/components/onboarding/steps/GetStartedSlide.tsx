@@ -17,15 +17,15 @@ export const GetStartedSlide = () => {
         initial={{ opacity: 0, scale: 0.8, y: 12 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className="w-24 h-24 rounded-3xl shadow-xl mb-5"
+        className="w-24 h-24 rounded-3xl shadow-card mb-5"
       />
       <motion.h1
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.15, duration: 0.4 }}
-        className="font-display text-3xl font-bold text-foreground mb-2"
+        className="font-display text-[34px] font-extrabold tracking-[-0.03em] text-primary mb-2"
       >
-        Mayotti
+        mayotti
       </motion.h1>
       <motion.p
         initial={{ opacity: 0, y: 10 }}

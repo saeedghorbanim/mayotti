@@ -1,33 +1,76 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/*
+  Mayotti design tokens — "Calm & minimal".
+  Source of truth: the Mayotti design system (tokens.json). Values are HSL
+  channels so Tailwind/shadcn can apply opacity (e.g. bg-primary/10).
+  Brand green is reserved for "you" and progress; amber (warning) and red
+  (destructive) are reserved for budget alerts, so they never look alike.
+*/
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 220 20% 15%;
-    --card: 210 20% 98%;
-    --card-foreground: 220 20% 15%;
+    --background: 75 17% 95.3%;          /* bg #F4F5F1 */
+    --foreground: 147 16% 10.8%;         /* ink #17201B */
+    --card: 0 0% 100%;                   /* surface #FFFFFF */
+    --card-foreground: 147 16% 10.8%;
     --popover: 0 0% 100%;
-    --popover-foreground: 220 20% 15%;
-    --primary: 158 64% 40%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 210 20% 96%;
-    --secondary-foreground: 220 20% 15%;
-    --muted: 210 20% 96%;
-    --muted-foreground: 220 10% 45%;
-    --accent: 158 64% 40%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 72% 51%;
+    --popover-foreground: 147 16% 10.8%;
+    --primary: 158 55% 27.1%;            /* brand #1F6B4F */
+    --primary-foreground: 0 0% 100%;     /* on-brand */
+    --primary-pressed: 158 56% 19.4%;    /* brand-pressed #164D39 */
+    --secondary: 90 18% 93.3%;           /* surface-sunken #EEF1EB */
+    --secondary-foreground: 147 16% 10.8%;
+    --muted: 86 14% 90.4%;               /* track #E7EAE3 */
+    --muted-foreground: 142 6% 37.8%;    /* ink-muted #5B665F */
+    --accent: 142 27% 92%;               /* brand-tint #E5F0E9 */
+    --accent-foreground: 150 34% 17.3%;  /* on-brand-tint #1D3B2C */
+    --destructive: 3 71% 41%;            /* danger #B3261E */
     --destructive-foreground: 0 0% 100%;
-    --success: 158 64% 40%;
+    --destructive-tint: 5 76% 93.5%;     /* danger-tint #FBE4E2 */
+    --success: 158 55% 27.1%;
     --success-foreground: 0 0% 100%;
-    --border: 210 20% 90%;
-    --input: 210 20% 94%;
-    --ring: 158 64% 40%;
-    --radius: 1rem;
+    --warning: 35 100% 30.2%;            /* warning #9A5B00 */
+    --warning-foreground: 0 0% 100%;
+    --warning-tint: 39 81% 91.8%;        /* warning-tint #FBEFD9 */
+    --border: 90 11% 85.1%;              /* border #D9DDD5 */
+    --divider: 86 12% 88.8%;             /* divider #E3E6DF */
+    --input: 90 11% 85.1%;
+    --ring: 158 55% 27.1%;
+    --radius: 1.125rem;                  /* radius-lg 18px; md 16px, sm 14px */
+  }
+
+  .dark {
+    --background: 150 11% 7.1%;          /* #101412 */
+    --foreground: 135 12% 93.3%;         /* #ECF0ED */
+    --card: 144 9% 10.4%;                /* #181D1A */
+    --card-foreground: 135 12% 93.3%;
+    --popover: 144 9% 10.4%;
+    --popover-foreground: 135 12% 93.3%;
+    --primary: 154 48% 57.6%;            /* #5FC79A */
+    --primary-foreground: 153 41% 8.6%;  /* #0D1F17 */
+    --primary-pressed: 153 51% 67%;      /* #7FD6AF */
+    --secondary: 140 9% 13.3%;           /* #1F2521 */
+    --secondary-foreground: 135 12% 93.3%;
+    --muted: 146 8% 17.8%;               /* #2A312D */
+    --muted-foreground: 144 6% 65.9%;    /* #A3ADA7 */
+    --accent: 154 34% 14.3%;             /* #183126 */
+    --accent-foreground: 148 41% 86.7%;  /* #CFEBDC */
+    --destructive: 4 82% 72.2%;          /* #F2867E */
+    --destructive-foreground: 153 41% 8.6%;
+    --destructive-tint: 4 37% 16.9%;     /* #3B1D1B */
+    --success: 154 48% 57.6%;
+    --success-foreground: 153 41% 8.6%;
+    --warning: 36 83% 64.7%;             /* #F0B45A */
+    --warning-foreground: 153 41% 8.6%;
+    --warning-tint: 39 53% 14.9%;        /* #3A2C12 */
+    --border: 146 7% 18.6%;              /* #2C332F */
+    --divider: 146 9% 15.1%;             /* #232A26 */
+    --input: 146 7% 18.6%;
+    --ring: 154 48% 57.6%;
   }
 }
 
@@ -35,10 +78,10 @@
   * {
     @apply border-border;
   }
-  
+
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: 'Manrope', system-ui, -apple-system, sans-serif;
   }
 
   html, body, #root {

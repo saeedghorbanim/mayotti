@@ -309,13 +309,13 @@ export const ChatView = ({ budget, onAddExpense, onSetBudgetLimit, onShowPaywall
         }
         if (expenses.length === 1) {
           toast({
-            title: "Expense saved! 💰",
+            title: "Expense saved",
             description: `$${expenses[0].amount.toFixed(2)} for ${expenses[0].description}`,
           });
         } else {
           const total = expenses.reduce((sum, e) => sum + e.amount, 0);
           toast({
-            title: `${expenses.length} expenses saved! 💰`,
+            title: `${expenses.length} expenses saved`,
             description: `Total: $${total.toFixed(2)}`,
           });
         }
@@ -368,13 +368,13 @@ export const ChatView = ({ budget, onAddExpense, onSetBudgetLimit, onShowPaywall
   return (
     <div className="flex flex-col h-full bg-background">
       {/* Budget Tracker */}
-      <div className="p-4 pb-2">
+      <div className="px-5 pt-1 pb-3">
         <BudgetTracker budget={localBudget} onSetBudget={handleSetBudgetLimit} />
       </div>
 
       {/* Monthly Prompt Usage */}
-      <div className="px-4 pb-2">
-        <div className="bg-card rounded-2xl p-3 shadow-sm border border-border">
+      <div className="px-5 pb-3">
+        <div className="bg-card rounded-[18px] px-4 py-3 shadow-card">
           <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
             <div className="flex items-center gap-1">
               <MessageCircle className="w-3 h-3" />
@@ -384,10 +384,10 @@ export const ChatView = ({ budget, onAddExpense, onSetBudgetLimit, onShowPaywall
           </div>
           <Progress 
             value={getUsagePercentage()} 
-            className="h-1.5"
+            className="h-1.5 bg-muted"
           />
           {getRemainingPrompts() <= 5 && getRemainingPrompts() > 0 && (
-            <p className="text-xs text-amber-600 mt-1">
+            <p className="text-xs font-semibold text-warning mt-1">
               Only {getRemainingPrompts()} messages left this month
             </p>
           )}
@@ -395,7 +395,7 @@ export const ChatView = ({ budget, onAddExpense, onSetBudgetLimit, onShowPaywall
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-4 space-y-3">
+      <div className="flex-1 overflow-y-auto px-4 space-y-2">
         {messages.slice(1).map((message) => (
           <div
             key={message.id}
@@ -406,10 +406,10 @@ export const ChatView = ({ budget, onAddExpense, onSetBudgetLimit, onShowPaywall
           >
             <div
               className={cn(
-                "max-w-[80%] rounded-2xl px-4 py-3 shadow-sm",
+                "px-[15px] py-[11px]",
                 message.role === "user"
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-card text-foreground border border-border"
+                  ? "max-w-[78%] bg-primary text-primary-foreground rounded-[18px] rounded-br-md"
+                  : "max-w-[80%] bg-card text-foreground rounded-[18px] rounded-bl-md shadow-card"
               )}
             >
               {message.image && (
@@ -419,7 +419,7 @@ export const ChatView = ({ budget, onAddExpense, onSetBudgetLimit, onShowPaywall
                   className="max-w-full h-auto rounded-lg mb-2 max-h-32 object-cover"
                 />
               )}
-              <p className="text-sm whitespace-pre-wrap">
+              <p className="text-[15px] leading-[21px] font-medium whitespace-pre-wrap">
                 {message.content
                   .replace(/\[EXPENSE:[\d.]+:[^:]+:[^\]]+\]/g, '')
                   .replace(/\[BUDGET:(set|add):[\d.]+\]/g, '')
@@ -430,7 +430,7 @@ export const ChatView = ({ budget, onAddExpense, onSetBudgetLimit, onShowPaywall
         ))}
         {isLoading && messages[messages.length - 1]?.role === "user" && (
           <div className="flex justify-start">
-            <div className="bg-card text-foreground border border-border rounded-2xl px-4 py-3 shadow-sm">
+            <div className="bg-card text-foreground rounded-[18px] rounded-bl-md px-4 py-3 shadow-card" aria-label="mayotti is typing">
               <div className="flex gap-1">
                 <span className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
                 <span className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
@@ -462,7 +462,7 @@ export const ChatView = ({ budget, onAddExpense, onSetBudgetLimit, onShowPaywall
       )}
 
       {/* Input Area */}
-      <div className="p-4 pb-6">
+      <div className="px-4 pt-3 pb-4">
         <input
           type="file"
           ref={fileInputRef}
@@ -482,11 +482,12 @@ export const ChatView = ({ budget, onAddExpense, onSetBudgetLimit, onShowPaywall
             type="button"
             onClick={() => fileInputRef.current?.click()}
             disabled={isLoading || isAnalyzingImage}
+            aria-label="Scan a receipt"
             className={cn(
-              "w-10 h-10 rounded-full bg-card border border-border flex items-center justify-center transition-colors",
-              selectedImage 
-                ? "text-primary border-primary" 
-                : "text-muted-foreground hover:text-foreground"
+              "w-11 h-11 shrink-0 rounded-full flex items-center justify-center transition-colors",
+              selectedImage
+                ? "bg-accent text-accent-foreground"
+                : "bg-secondary text-foreground"
             )}
           >
             {isAnalyzingImage ? (
@@ -498,24 +499,26 @@ export const ChatView = ({ budget, onAddExpense, onSetBudgetLimit, onShowPaywall
             )}
           </button>
 
-          <div className="flex-1 flex items-center bg-card border border-border rounded-full px-4">
+          <div className="flex-1 min-w-0 flex items-center bg-card rounded-full pl-4 pr-1.5 h-11 shadow-card">
             <Input
+              aria-label="Message mayotti"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder={isRecording ? "Listening..." : "Type or speak..."}
-              className="flex-1 border-0 bg-transparent focus-visible:ring-0 px-0"
+              placeholder={isRecording ? "Listening…" : "Spent $12 on lunch…"}
+              className="flex-1 border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 px-0 text-[15px] h-11"
               disabled={isLoading || isRecording}
             />
             <button
               type="button"
               onClick={handleMicClick}
               disabled={isLoading || isProcessing}
+              aria-label={isRecording ? "Stop listening" : "Speak an expense"}
               className={cn(
-                "transition-colors p-1",
-                isRecording 
-                  ? "text-destructive animate-pulse" 
-                  : isProcessing 
-                    ? "text-muted-foreground" 
+                "w-9 h-9 shrink-0 rounded-full flex items-center justify-center transition-colors",
+                isRecording
+                  ? "bg-destructive text-destructive-foreground animate-pulse"
+                  : isProcessing
+                    ? "text-muted-foreground"
                     : "text-muted-foreground hover:text-foreground"
               )}
             >
@@ -532,7 +535,8 @@ export const ChatView = ({ budget, onAddExpense, onSetBudgetLimit, onShowPaywall
           <Button
             type="submit"
             size="icon"
-            className="w-10 h-10 rounded-full shrink-0 shadow-md"
+            aria-label="Send"
+            className="w-11 h-11 rounded-full shrink-0 hover:bg-primary-pressed"
             disabled={isLoading || isRecording || isProcessing}
           >
             <Send className="w-4 h-4" />

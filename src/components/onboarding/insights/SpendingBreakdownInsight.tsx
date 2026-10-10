@@ -19,7 +19,7 @@ const CATEGORY_LABELS: Record<string, string> = {
   subscriptions: "Subscriptions",
 };
 
-const COLORS = ["hsl(var(--primary))", "#3b82f6", "#a855f7", "#f97316", "#ec4899", "#eab308"];
+const COLORS = ["hsl(var(--primary))", "#0D9488", "#2563EB", "#8B5CF6", "#EC4899", "#0891B2"];
 
 const DEFAULT_CATEGORIES = ["groceries", "dining", "transportation", "shopping", "entertainment"];
 

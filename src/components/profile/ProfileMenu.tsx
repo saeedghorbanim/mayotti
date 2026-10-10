@@ -35,12 +35,12 @@ export const ProfileMenu = ({ onShowPaywall }: ProfileMenuProps) => {
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <button className="focus:outline-none focus:ring-2 focus:ring-white/30 rounded-full">
-            <Avatar className="h-10 w-10 border-2 border-white/30 cursor-pointer hover:border-white/50 transition-colors">
+          <button aria-label="Profile and settings" className="focus:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-full">
+            <Avatar className="h-11 w-11 border border-border cursor-pointer transition-colors">
               {profile.avatarUrl ? (
                 <AvatarImage src={profile.avatarUrl} alt={profile.name} />
               ) : null}
-              <AvatarFallback className="bg-white/20 text-primary-foreground text-sm font-medium">
+              <AvatarFallback className="bg-card text-foreground text-sm font-bold">
                 {getInitials(profile.name)}
               </AvatarFallback>
             </Avatar>

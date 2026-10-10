@@ -15,29 +15,29 @@ const tabs = [
 
 export const BottomNav = ({ activeTab, onTabChange }: BottomNavProps) => {
   return (
-    <nav 
-      className="fixed bottom-0 left-0 right-0 bg-background border-t border-border shadow-lg"
-      style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+    <nav
+      aria-label="Main"
+      className="fixed bottom-0 left-0 right-0 bg-card border-t border-divider"
+      style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
-      <div className="flex justify-around items-center h-16">
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => onTabChange(tab.id)}
-            className={cn(
-              "flex flex-col items-center justify-center flex-1 h-full transition-all",
-              activeTab === tab.id
-                ? "text-primary"
-                : "text-muted-foreground hover:text-foreground"
-            )}
-          >
-            <tab.icon className={cn(
-              "w-5 h-5 mb-1 transition-transform",
-              activeTab === tab.id && "scale-110"
-            )} />
-            <span className="text-xs font-medium">{tab.label}</span>
-          </button>
-        ))}
+      <div className="grid grid-cols-4 px-2 pt-2 pb-1">
+        {tabs.map((tab) => {
+          const isActive = activeTab === tab.id;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => onTabChange(tab.id)}
+              aria-current={isActive ? "page" : undefined}
+              className={cn(
+                "flex flex-col items-center justify-center gap-[3px] h-[52px] transition-colors",
+                isActive ? "text-primary font-bold" : "text-muted-foreground font-semibold hover:text-foreground"
+              )}
+            >
+              <tab.icon className="w-[22px] h-[22px]" strokeWidth={2} aria-hidden="true" />
+              <span className="text-[11px] leading-[14px]">{tab.label}</span>
+            </button>
+          );
+        })}
       </div>
     </nav>
   );

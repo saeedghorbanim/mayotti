@@ -23,12 +23,12 @@ export const HardPaywallGate = ({ onSubscribed }: HardPaywallGateProps) => {
   }, []);
 
   return (
-    <div className="fixed inset-0 bg-gradient-to-b from-background to-muted/30 flex flex-col items-center justify-center gap-5 p-6 text-center">
-      <img src={appIcon} alt="Mayotti" className="w-20 h-20 rounded-3xl shadow-xl" />
+    <div className="fixed inset-0 bg-background flex flex-col items-center justify-center gap-5 p-6 text-center">
+      <img src={appIcon} alt="Mayotti" className="w-20 h-20 rounded-3xl shadow-card" />
       <p className="text-muted-foreground text-sm max-w-xs">
         Subscribe to Mayotti to start tracking your expenses and building your savings.
       </p>
-      <Button size="lg" className="h-12 px-8" onClick={attempt} disabled={isPresenting}>
+      <Button size="lg" className="h-12 px-8 rounded-full font-bold" onClick={attempt} disabled={isPresenting}>
         {isPresenting ? (
           <>
             <RefreshCw className="w-4 h-4 mr-2 animate-spin" />

@@ -4,6 +4,7 @@ import { AreaChart, Area, XAxis } from "recharts";
 import { addMonths, format } from "date-fns";
 import { ChartContainer, type ChartConfig } from "@/components/ui/chart";
 import type { OnboardingAnswers } from "@/hooks/useOnboarding";
+import { SproutLogo } from "@/components/brand/SproutLogo";
 
 interface ResultsSlideProps {
   answers: OnboardingAnswers;
@@ -73,8 +74,8 @@ export const ResultsSlide = ({ answers }: ResultsSlideProps) => {
         plan
       </p>
 
-      <div className="w-full flex items-center gap-4 bg-card border border-border rounded-2xl p-5">
-        <span className="text-3xl">💰</span>
+      <div className="w-full flex items-center gap-4 bg-card shadow-card rounded-3xl p-5">
+        <SproutLogo size={48} title="" />
         <div className="text-left">
           <p className="font-display text-2xl font-bold text-primary">${totalSaved.toLocaleString()}</p>
           <p className="text-sm text-muted-foreground">you could keep in your pocket</p>

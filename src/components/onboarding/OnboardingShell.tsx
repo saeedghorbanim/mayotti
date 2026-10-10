@@ -13,7 +13,7 @@ interface OnboardingShellProps {
 
 export const OnboardingShell = ({ children, footer, onBack, progress, dots }: OnboardingShellProps) => {
   return (
-    <div className="fixed inset-0 bg-gradient-to-b from-background to-muted/30 flex flex-col">
+    <div className="fixed inset-0 bg-background flex flex-col">
       <div
         className="flex items-center gap-3 px-4 pb-2"
         style={{ paddingTop: "max(env(safe-area-inset-top), 1.5rem)" }}
