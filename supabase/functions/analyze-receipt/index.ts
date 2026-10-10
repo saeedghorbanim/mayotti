@@ -2,7 +2,9 @@ import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { authorizeAiRequest, corsHeaders } from "../_shared/guard.ts";
 
-const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
+const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+// Must be a vision-capable model. Override with the OPENAI_RECEIPT_MODEL secret.
+const receiptModel = Deno.env.get('OPENAI_RECEIPT_MODEL') ?? 'gpt-5-mini';
 
 // Input validation constants
 const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024; // 5MB
@@ -54,8 +56,8 @@ serve(async (req) => {
       });
     }
 
-    if (!lovableApiKey) {
-      console.error("LOVABLE_API_KEY is not configured");
+    if (!openAIApiKey) {
+      console.error("OPENAI_API_KEY is not configured");
       return new Response(JSON.stringify({ error: 'Service configuration error' }), {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -68,14 +70,17 @@ serve(async (req) => {
 
     console.log('Analyzing receipt image...');
 
-    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${lovableApiKey}`,
+        'Authorization': `Bearer ${openAIApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
+        model: receiptModel,
+        ...(receiptModel.startsWith('gpt-5') ? { reasoning_effort: 'minimal' } : {}),
+        // Guarantees a parseable JSON object instead of prose or markdown fences.
+        response_format: { type: 'json_object' },
         messages: [
           {
             role: 'system',
@@ -111,7 +116,7 @@ If you can't read certain fields, use null. Be concise and accurate.`,
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('AI Gateway error:', response.status, errorText);
+      console.error('OpenAI error:', response.status, errorText);
       return new Response(JSON.stringify({ error: 'Unable to analyze receipt.' }), {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -119,7 +124,7 @@ If you can't read certain fields, use null. Be concise and accurate.`,
     }
 
     const data = await response.json();
-    const content = data.choices[0]?.message?.content;
+    const content = data.choices?.[0]?.message?.content ?? '';
 
     // Try to parse JSON from the response
     let parsed;

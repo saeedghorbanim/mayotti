@@ -1,75 +1,41 @@
-# Mayotti - Smart Expense Tracker
+# mayotti
 
-Mayotti is an AI-powered expense tracking app that helps you manage your finances effortlessly with voice input, receipt scanning, and intelligent insights.
+A calm, friendly AI expense tracker for iOS. Log spending by typing, speaking or snapping a receipt; mayotti keeps track, warns you gently before you overspend, and suggests small ways to save.
 
-## Project info
+## Stack
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+- **App:** React + TypeScript + Vite + Tailwind (shadcn/ui), wrapped for iOS with Capacitor
+- **Data:** stays on the device (localStorage)
+- **Subscriptions:** RevenueCat (`premium` entitlement, hosted paywall)
+- **Backend:** Supabase Edge Functions that check the subscription, enforce a monthly AI quota and call OpenAI
+  - `chat` — expense parsing and budget chat
+  - `analyze-receipt` — reads receipt photos
+  - `transcribe` — voice notes (Whisper)
 
-## How can I edit this code?
+## Run locally
 
-There are several ways of editing your application.
-
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+```bash
+cp .env.example .env   # fill in your Supabase URL/key and RevenueCat iOS key
+npm install
+npm run dev            # http://localhost:8080 (AI features need a native build)
 ```
 
-**Edit a file directly in GitHub**
+## Run on iPhone
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+```bash
+npm run build
+npx cap sync ios
+npx cap open ios       # then Run in Xcode
+```
 
-**Use GitHub Codespaces**
+## Deploy the backend
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+```bash
+supabase login
+supabase link --project-ref <your-project-ref>
+supabase secrets set OPENAI_API_KEY=sk-... REVENUECAT_SECRET_KEY=sk_...
+supabase db push
+supabase functions deploy chat analyze-receipt transcribe
+```
 
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+See `CLAUDE.md` for architecture details.

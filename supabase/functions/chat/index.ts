@@ -2,7 +2,9 @@ import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { authorizeAiRequest, corsHeaders } from "../_shared/guard.ts";
 
-const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
+const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+// Override with the OPENAI_CHAT_MODEL secret without a code change.
+const chatModel = Deno.env.get('OPENAI_CHAT_MODEL') ?? 'gpt-5-mini';
 
 const systemPrompt = `You are Mayotti, a friendly and supportive AI budget assistant. You talk like a close friend who genuinely cares about helping users manage their money better.
 
@@ -114,8 +116,8 @@ serve(async (req) => {
       });
     }
 
-    if (!lovableApiKey) {
-      console.error("LOVABLE_API_KEY is not configured");
+    if (!openAIApiKey) {
+      console.error("OPENAI_API_KEY is not configured");
       return new Response(JSON.stringify({ error: 'Service configuration error' }), {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -128,14 +130,16 @@ serve(async (req) => {
 
     console.log('Processing chat request with', messages.length, 'messages');
 
-    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${lovableApiKey}`,
+        'Authorization': `Bearer ${openAIApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'openai/gpt-5-mini',
+        model: chatModel,
+        // Short, chatty replies don't need deep reasoning; keeps responses fast and cheap.
+        ...(chatModel.startsWith('gpt-5') ? { reasoning_effort: 'minimal' } : {}),
         messages: [
           { role: 'system', content: systemPrompt },
           // Forward only role/content so clients can't inject extra fields or system prompts
@@ -147,7 +151,7 @@ serve(async (req) => {
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('AI Gateway error:', response.status, errorText);
+      console.error('OpenAI error:', response.status, errorText);
       
       if (response.status === 429) {
         return new Response(JSON.stringify({ error: 'Too many requests. Please try again later.' }), {
@@ -155,7 +159,7 @@ serve(async (req) => {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
       }
-      if (response.status === 402) {
+      if (response.status === 401 || response.status === 402 || response.status === 403) {
         return new Response(JSON.stringify({ error: 'Service temporarily unavailable.' }), {
           status: 503,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },

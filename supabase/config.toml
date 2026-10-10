@@ -1,4 +1,4 @@
-project_id = "oxebqdbbuptokzzuspxx"
+project_id = "mayotti"
 
 [api]
 enabled = true
@@ -31,5 +31,13 @@ enable_signup = true
 double_confirm_changes = true
 enable_confirmations = false
 
+# All three AI functions authenticate callers with the RevenueCat guard
+# (supabase/functions/_shared/guard.ts), not Supabase auth JWTs.
 [functions.chat]
+verify_jwt = false
+
+[functions.analyze-receipt]
+verify_jwt = false
+
+[functions.transcribe]
 verify_jwt = false

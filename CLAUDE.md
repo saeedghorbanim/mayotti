@@ -14,6 +14,13 @@ npm run preview      # Preview production build
 
 There is no test suite configured for this project.
 
+Backend deploy (Supabase CLI, after `supabase link --project-ref <ref>`):
+```bash
+supabase db push                       # apply migrations
+supabase functions deploy chat analyze-receipt transcribe
+supabase secrets set OPENAI_API_KEY=... REVENUECAT_SECRET_KEY=...
+```
+
 To sync to native platforms after a web build:
 ```bash
 npx cap sync         # Sync web assets to iOS/Android
@@ -35,7 +42,9 @@ All user data (expenses, budget, onboarding answers, subscription status) lives 
 #### AI endpoint security
 
 - The Supabase publishable key is public (it ships in the bundle), so it is **not** an auth mechanism. Every AI function runs `authorizeAiRequest` from `supabase/functions/_shared/guard.ts` after input validation: the client sends its RevenueCat app user ID in `x-rc-app-user-id` (via `aiRequestHeaders()` in `src/lib/aiRequest.ts`), the server verifies the `premium` entitlement with the RevenueCat REST API, then charges a server-side monthly quota (`ai_usage` table + `consume_ai_quota` RPC, service-role only). It fails closed.
-- Required function secrets: `REVENUECAT_SECRET_KEY` (RevenueCat secret API key), plus the auto-provided `SUPABASE_URL` / `SUPABASE_SERVICE_ROLE_KEY`, and `LOVABLE_API_KEY` / `OPENAI_API_KEY` for the upstream AI calls.
+- Required function secrets: `REVENUECAT_SECRET_KEY` (RevenueCat secret API key, V1) and `OPENAI_API_KEY`, plus the auto-provided `SUPABASE_URL` / `SUPABASE_SERVICE_ROLE_KEY`. Optional: `OPENAI_CHAT_MODEL`, `OPENAI_RECEIPT_MODEL` (both default to `gpt-5-mini`).
+- All three AI functions call OpenAI directly (`chat` and `analyze-receipt` via Chat Completions, `transcribe` via Whisper). There is no Lovable dependency; the backend is the developer's own Supabase project.
+- `supabase/config.toml` sets `verify_jwt = false` for all three functions because callers are authenticated by the RevenueCat guard, not Supabase auth.
 - Consequence: `npm run dev` on web can't use AI features against deployed functions (no RevenueCat on web) — test AI on a native build.
 - Responses: 401/403 `subscription_required` → client shows the paywall; 429 `quota_exceeded` → client shows the limit message.
 - The chat function only accepts `user`/`assistant` roles from clients (no client-supplied system prompts); the client sends at most the last 20 messages.
