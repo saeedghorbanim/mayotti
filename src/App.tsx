@@ -41,7 +41,7 @@ const App = () => {
   if (!hasCompletedOnboarding) {
     mainContent = <Onboarding answers={answers} updateAnswer={updateAnswer} onComplete={completeOnboarding} />;
   } else if (subscriptionLoading) {
-    mainContent = <div className="fixed inset-0 bg-gradient-to-b from-background to-muted/30" />;
+    mainContent = <div className="fixed inset-0 bg-background" />;
   } else if (Capacitor.isNativePlatform() && !subscription.isSubscribed) {
     mainContent = <HardPaywallGate onSubscribed={setSubscriptionActive} />;
   } else {
@@ -54,7 +54,7 @@ const App = () => {
         <Toaster />
         <Sonner />
         {showSplash && (
-          <SplashScreen onComplete={() => setShowSplash(false)} duration={2500} />
+          <SplashScreen onComplete={() => setShowSplash(false)} duration={2400} />
         )}
         <BrowserRouter>
           <Routes>
