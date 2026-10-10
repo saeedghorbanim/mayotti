@@ -30,6 +30,16 @@ npx cap open android # Open in Android Studio
 All user data (expenses, budget, onboarding answers, subscription status) lives in **browser localStorage** — there is no server-side persistence. Supabase is used only for Edge Functions:
 - `/chat` — AI expense parsing via natural language
 - `/analyze-receipt` — OCR receipt image analysis
+- `/transcribe` — voice-to-text for voice input
+
+#### AI endpoint security
+
+- The Supabase publishable key is public (it ships in the bundle), so it is **not** an auth mechanism. Every AI function runs `authorizeAiRequest` from `supabase/functions/_shared/guard.ts` after input validation: the client sends its RevenueCat app user ID in `x-rc-app-user-id` (via `aiRequestHeaders()` in `src/lib/aiRequest.ts`), the server verifies the `premium` entitlement with the RevenueCat REST API, then charges a server-side monthly quota (`ai_usage` table + `consume_ai_quota` RPC, service-role only). It fails closed.
+- Required function secrets: `REVENUECAT_SECRET_KEY` (RevenueCat secret API key), plus the auto-provided `SUPABASE_URL` / `SUPABASE_SERVICE_ROLE_KEY`, and `LOVABLE_API_KEY` / `OPENAI_API_KEY` for the upstream AI calls.
+- Consequence: `npm run dev` on web can't use AI features against deployed functions (no RevenueCat on web) — test AI on a native build.
+- Responses: 401/403 `subscription_required` → client shows the paywall; 429 `quota_exceeded` → client shows the limit message.
+- The chat function only accepts `user`/`assistant` roles from clients (no client-supplied system prompts); the client sends at most the last 20 messages.
+- The legacy `expenses` / `budget_limits` tables are unused and fully locked down (no RLS policies, grants revoked). Don't re-add permissive `USING (true)` policies.
 
 ### Key Directories
 
@@ -58,7 +68,7 @@ All user data (expenses, budget, onboarding answers, subscription status) lives 
 - **Web/simulator bypasses the gate** (no real IAP there) so `npm run dev` stays usable for local development — you cannot demo the actual paywall-gated experience outside a native build with sandbox/Test Store purchases.
 - The paywall UI itself is **not built in this repo** — it's designed remotely in the RevenueCat dashboard (Paywalls builder) and rendered natively via `RevenueCatUI.presentPaywall()` from `@revenuecat/purchases-capacitor-ui`. Changing paywall copy/pricing/layout does not require an app update.
 - `usePaywall` (`src/hooks/usePaywall.ts`) wraps `RevenueCatUI.presentPaywall()`; treats `PAYWALL_RESULT.PURCHASED`/`RESTORED` as success and calls the `onPurchased` callback (typically `useAppUsage().setSubscriptionActive`). Used both by the mandatory `HardPaywallGate` and by voluntary triggers (Settings' "Upgrade to Pro", `ChatView`'s monthly AI-prompt cap).
-- `usePromptLimit` (`MONTHLY_PROMPT_LIMIT = 30`) is unrelated to the paywall gate — it's a separate monthly rate limit on AI calls that applies to subscribers, to control API cost.
+- `usePromptLimit` (`MONTHLY_PROMPT_LIMIT = 30`) is unrelated to the paywall gate — it's a separate monthly rate limit on AI calls that applies to subscribers, to control API cost. It is only a UX mirror; the enforced limit is server-side (`MONTHLY_LIMITS` in `supabase/functions/_shared/guard.ts`, keep `chat` in sync).
 - RevenueCat (`@revenuecat/purchases-capacitor` + `@revenuecat/purchases-capacitor-ui`, both pinned to the same version — currently `13.5.1`) handles IAP and the paywall UI; product ID `com.mayotti.subscription.monthly`; entitlement identifier `premium`.
 - `useAppUsage` now tracks **subscription status only** (no usage-count/free-limit machinery) — validated against RevenueCat on native, always cleared on web/simulator.
 

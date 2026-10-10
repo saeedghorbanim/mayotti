@@ -1,13 +1,8 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { authorizeAiRequest, corsHeaders } from "../_shared/guard.ts";
 
 const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
 
 // Input validation constants
 const MAX_AUDIO_SIZE_BYTES = 10 * 1024 * 1024; // 10MB
@@ -42,8 +37,6 @@ function processBase64Chunks(base64String: string, chunkSize = 32768): Uint8Arra
   return result;
 }
 
-// Authentication removed - this is a demo app using localStorage without user accounts
-
 function validateAudioData(audio: unknown): { valid: boolean; error?: string } {
   if (!audio || typeof audio !== 'string') {
     return { valid: false, error: 'Invalid audio data' };
@@ -68,8 +61,6 @@ serve(async (req) => {
   }
 
   try {
-    // No authentication required - demo app using localStorage
-    
     const body = await req.json();
     const { audio } = body;
     
@@ -89,6 +80,10 @@ serve(async (req) => {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
+
+    // Verify subscription and charge quota only once the request is valid
+    const denied = await authorizeAiRequest(req, 'transcribe');
+    if (denied) return denied;
 
     // Process audio in chunks
     const binaryAudio = processBase64Chunks(audio);

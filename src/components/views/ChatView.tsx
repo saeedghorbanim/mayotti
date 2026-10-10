@@ -9,6 +9,7 @@ import { BudgetTracker } from "@/components/budget/BudgetTracker";
 import { BudgetLimit, Expense } from "@/hooks/useLocalStorage";
 import { usePromptLimit, MONTHLY_PROMPT_LIMIT } from "@/hooks/usePromptLimit";
 import { Progress } from "@/components/ui/progress";
+import { AiRequestError, aiRequestHeaders, functionUrl, toAiRequestError } from "@/lib/aiRequest";
 
 interface ChatViewProps {
   budget: BudgetLimit | null;
@@ -25,8 +26,9 @@ interface Message {
   image?: string;
 }
 
-const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`;
-const ANALYZE_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/analyze-receipt`;
+// Only the most recent turns are sent to the AI, which keeps requests within the
+// chat function's message cap and bounds per-request cost.
+const MAX_HISTORY_MESSAGES = 20;
 
 const initialMessages: Message[] = [
   {
@@ -83,6 +85,7 @@ export const ChatView = ({ budget, onAddExpense, onSetBudgetLimit, onShowPaywall
     getRemainingPrompts,
     getUsagePercentage,
     incrementPromptCount,
+    getLimitReachedMessage,
     usageData
   } = usePromptLimit();
 
@@ -145,17 +148,14 @@ export const ChatView = ({ budget, onAddExpense, onSetBudgetLimit, onShowPaywall
   const analyzeReceipt = async (imageData: string) => {
     setIsAnalyzingImage(true);
     try {
-      const response = await fetch(ANALYZE_URL, {
+      const response = await fetch(functionUrl("analyze-receipt"), {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-        },
+        headers: await aiRequestHeaders(),
         body: JSON.stringify({ image: imageData }),
       });
 
       if (!response.ok) {
-        throw new Error("Failed to analyze receipt");
+        throw await toAiRequestError(response);
       }
 
       const data = await response.json();
@@ -249,18 +249,19 @@ export const ChatView = ({ budget, onAddExpense, onSetBudgetLimit, onShowPaywall
       const chatMessages = messages
         .slice(1)
         .concat(userMessage)
+        .slice(-MAX_HISTORY_MESSAGES)
         .map((m) => ({ role: m.role, content: m.content }));
 
-      const resp = await fetch(CHAT_URL, {
+      const resp = await fetch(functionUrl("chat"), {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-        },
+        headers: await aiRequestHeaders(),
         body: JSON.stringify({ messages: chatMessages }),
       });
 
-      if (!resp.ok || !resp.body) {
+      if (!resp.ok) {
+        throw await toAiRequestError(resp);
+      }
+      if (!resp.body) {
         throw new Error("Failed to start stream");
       }
 
@@ -347,6 +348,15 @@ export const ChatView = ({ budget, onAddExpense, onSetBudgetLimit, onShowPaywall
       
     } catch (error) {
       console.error("Chat error:", error);
+      // The server is the source of truth for subscription and quota
+      if (error instanceof AiRequestError && (error.status === 401 || error.status === 403)) {
+        onShowPaywall();
+        return;
+      }
+      if (error instanceof AiRequestError && error.status === 429) {
+        toast({ title: "Monthly limit reached", description: getLimitReachedMessage() });
+        return;
+      }
       toast({
         title: "Oops!",
         description: "Something went wrong. Please try again.",

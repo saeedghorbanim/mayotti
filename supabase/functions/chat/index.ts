@@ -1,13 +1,8 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { authorizeAiRequest, corsHeaders } from "../_shared/guard.ts";
 
 const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
 
 const systemPrompt = `You are Mayotti, a friendly and supportive AI budget assistant. You talk like a close friend who genuinely cares about helping users manage their money better.
 
@@ -65,10 +60,7 @@ Always be helpful, never preachy. You're a friend who happens to be great with m
 
 // Input validation constants
 const MAX_MESSAGES = 50;
-const MAX_MESSAGE_LENGTH = 10000;
-
-// Authentication removed - this is a demo app using localStorage without user accounts
-// The function validates input and rate-limits via the AI gateway
+const MAX_MESSAGE_LENGTH = 8000;
 
 function validateMessages(messages: unknown): { valid: boolean; error?: string } {
   if (!Array.isArray(messages)) {
@@ -97,7 +89,7 @@ function validateMessages(messages: unknown): { valid: boolean; error?: string }
       return { valid: false, error: `Message too long (max ${MAX_MESSAGE_LENGTH} characters)` };
     }
     
-    if (!msg.role || !['user', 'assistant', 'system'].includes(msg.role)) {
+    if (!msg.role || !['user', 'assistant'].includes(msg.role)) {
       return { valid: false, error: 'Invalid message role' };
     }
   }
@@ -111,8 +103,6 @@ serve(async (req) => {
   }
 
   try {
-    // No authentication required - this is a demo app using localStorage without user accounts
-    
     const body = await req.json();
     const { messages } = body;
     // Validate input
@@ -132,6 +122,10 @@ serve(async (req) => {
       });
     }
 
+    // Verify subscription and charge quota only once the request is valid
+    const denied = await authorizeAiRequest(req, 'chat');
+    if (denied) return denied;
+
     console.log('Processing chat request with', messages.length, 'messages');
 
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
@@ -144,7 +138,8 @@ serve(async (req) => {
         model: 'openai/gpt-5-mini',
         messages: [
           { role: 'system', content: systemPrompt },
-          ...messages,
+          // Forward only role/content so clients can't inject extra fields or system prompts
+          ...messages.map((m: { role: string; content: string }) => ({ role: m.role, content: m.content })),
         ],
         stream: true,
       }),

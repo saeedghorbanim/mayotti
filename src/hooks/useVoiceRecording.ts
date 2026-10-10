@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback } from 'react';
+import { aiRequestHeaders, functionUrl } from '@/lib/aiRequest';
 
 interface UseVoiceRecordingOptions {
   onTranscription?: (text: string) => void;
@@ -39,18 +40,16 @@ export const useVoiceRecording = ({ onTranscription, onError }: UseVoiceRecordin
               const base64Audio = (reader.result as string).split(',')[1];
 
               // Send to transcription endpoint
-              const response = await fetch(
-                `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/transcribe`,
-                {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-                  },
-                  body: JSON.stringify({ audio: base64Audio }),
-                }
-              );
+              const response = await fetch(functionUrl('transcribe'), {
+                method: 'POST',
+                headers: await aiRequestHeaders(),
+                body: JSON.stringify({ audio: base64Audio }),
+              });
 
+              if (response.status === 429) {
+                onError?.("You've reached this month's voice limit. Try typing instead.");
+                return;
+              }
               if (!response.ok) {
                 throw new Error('Transcription failed');
               }

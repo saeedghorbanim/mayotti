@@ -28,7 +28,8 @@ const App = () => {
       if (!Capacitor.isNativePlatform()) return;
       const { isConfigured } = await Purchases.isConfigured();
       if (isConfigured) return;
-      await Purchases.setLogLevel({ level: LOG_LEVEL.DEBUG });
+      // Verbose logs expose customer and purchase details in device logs; dev builds only
+      if (import.meta.env.DEV) await Purchases.setLogLevel({ level: LOG_LEVEL.DEBUG });
       await Purchases.configure({ apiKey: IOS_API_KEY });
     };
     initRevenueCat();

@@ -1,19 +1,12 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { authorizeAiRequest, corsHeaders } from "../_shared/guard.ts";
 
 const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
 
 // Input validation constants
 const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024; // 5MB
 const ALLOWED_IMAGE_FORMATS = ['jpeg', 'jpg', 'png', 'webp', 'gif'];
-
-// Authentication removed - this is a demo app using localStorage without user accounts
 
 function validateImageData(image: unknown): { valid: boolean; error?: string } {
   if (!image || typeof image !== 'string') {
@@ -49,8 +42,6 @@ serve(async (req) => {
   }
 
   try {
-    // No authentication required - demo app using localStorage
-    
     const body = await req.json();
     const { image } = body;
 
@@ -70,6 +61,10 @@ serve(async (req) => {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
+
+    // Verify subscription and charge quota only once the request is valid
+    const denied = await authorizeAiRequest(req, 'receipt');
+    if (denied) return denied;
 
     console.log('Analyzing receipt image...');
 
