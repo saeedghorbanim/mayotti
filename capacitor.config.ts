@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.savicash.app',
+  appId: 'com.mayotti.app',
   appName: 'Mayotti',
   webDir: 'dist',
   ios: {
