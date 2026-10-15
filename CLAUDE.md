@@ -83,6 +83,8 @@ All user data (expenses, budget, onboarding answers, subscription status) lives 
 
 #### RevenueCat Configuration
 
+- The iOS bundle ID is `com.savicash.app` (in `capacitor.config.ts` and the Xcode project). It is permanent: it matches the existing App Store Connect app record, which can't change its bundle ID. The user-facing name is "Mayotti"; don't "fix" the bundle ID to `com.mayotti.app` — the RevenueCat iOS app's bundle ID must match it too.
+
 - The iOS API key is read from `VITE_REVENUECAT_IOS_KEY` in `.env` — no hardcoded fallback
 - Use the `appl_` production key for App Store builds; never commit `test_` keys
 - `src/App.tsx` initializes RevenueCat on native platforms only via `Capacitor.isNativePlatform()`
