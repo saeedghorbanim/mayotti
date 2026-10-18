@@ -31,7 +31,7 @@ export const BudgetTracker = ({ budget, onSetBudget }: BudgetTrackerProps) => {
     onSetBudget(limitAmount);
     setIsEditing(false);
     toast({
-      title: 'Budget saved!',
+      title: 'Budget saved',
       description: `Your monthly budget is now $${limitAmount.toFixed(2)}`,
     });
   };

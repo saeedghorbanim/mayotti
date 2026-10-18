@@ -17,7 +17,7 @@ export const BottomNav = ({ activeTab, onTabChange }: BottomNavProps) => {
   return (
     <nav
       aria-label="Main"
-      className="fixed bottom-0 left-0 right-0 bg-card border-t border-divider"
+      className="shrink-0 bg-card border-t border-divider"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
       <div className="grid grid-cols-4 px-2 pt-2 pb-1">

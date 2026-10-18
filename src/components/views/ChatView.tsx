@@ -112,13 +112,13 @@ export const ChatView = ({ budget, onAddExpense, onSetBudgetLimit, onShowPaywall
     onTranscription: (text) => {
       setInput(text);
       toast({
-        title: "Got it! 🎤",
+        title: "Got it",
         description: "Your voice has been transcribed",
       });
     },
     onError: (error) => {
       toast({
-        title: "Voice Error",
+        title: "Voice error",
         description: error,
         variant: "destructive",
       });
@@ -329,7 +329,7 @@ export const ChatView = ({ budget, onAddExpense, onSetBudgetLimit, onShowPaywall
           onSetBudgetLimit(budgetCommand.amount);
           refreshLocalBudget();
           toast({
-            title: "Budget set! 💪",
+            title: "Budget set",
             description: `Your budget is now $${budgetCommand.amount.toFixed(2)}`,
           });
         } else if (budgetCommand.action === 'add') {
@@ -337,7 +337,7 @@ export const ChatView = ({ budget, onAddExpense, onSetBudgetLimit, onShowPaywall
           onSetBudgetLimit(currentLimit + budgetCommand.amount);
           refreshLocalBudget();
           toast({
-            title: "Budget updated! 📈",
+            title: "Budget updated",
             description: `Added $${budgetCommand.amount.toFixed(2)} to your budget`,
           });
         }

@@ -38,7 +38,7 @@ const Index = () => {
     <div className="h-[100dvh] w-full overflow-hidden bg-background flex flex-col">
       <AppHeader monthlyTotal={monthlyTotal} onShowPaywall={handleShowPaywall} />
 
-      <div className="flex-1 min-h-0 overflow-hidden pb-20">
+      <div className="flex-1 min-h-0 overflow-hidden">
         {activeTab === "chat" && (
           <ChatView
             budget={budget}

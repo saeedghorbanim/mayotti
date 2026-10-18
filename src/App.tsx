@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Toaster } from "@/components/ui/toaster";
+import { AppToaster } from "@/components/feedback/AppToaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -52,7 +52,7 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <Toaster />
+        <AppToaster />
         <Sonner />
         {showSplash && (
           <SplashScreen onComplete={() => setShowSplash(false)} duration={2400} />
