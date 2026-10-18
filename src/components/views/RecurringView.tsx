@@ -118,7 +118,7 @@ export const RecurringView = ({ expenses }: RecurringViewProps) => {
   };
 
   return (
-    <div className="p-4 space-y-6 overflow-y-auto h-full">
+    <div className="p-4 space-y-6 overflow-y-auto overflow-x-hidden h-full">
       <div>
         <div className="flex items-center gap-2 mb-1">
           <h1 className="text-2xl font-bold">Recurring</h1>
@@ -202,7 +202,7 @@ export const RecurringView = ({ expenses }: RecurringViewProps) => {
       )}
 
       <p className="text-xs text-center text-muted-foreground">
-        📱 All data stored locally on your device
+        All data stays on your device
       </p>
     </div>
   );

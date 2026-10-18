@@ -135,7 +135,7 @@ export const StatsView = ({ expenses }: StatsViewProps) => {
   const monthName = now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
 
   return (
-    <div className="p-4 space-y-6 overflow-y-auto h-full">
+    <div className="p-4 space-y-6 overflow-y-auto overflow-x-hidden h-full">
       <div>
         <h1 className="text-2xl font-bold mb-1">Stats</h1>
         <p className="text-muted-foreground text-sm">{monthName}</p>
@@ -143,9 +143,9 @@ export const StatsView = ({ expenses }: StatsViewProps) => {
 
       <div className="grid grid-cols-3 gap-3">
         {stats.map((stat) => (
-          <Card key={stat.label} className="p-3 bg-card border-border">
+          <Card key={stat.label} className="min-w-0 p-3 bg-card border-border">
             <stat.icon className="w-4 h-4 text-muted-foreground mb-2" />
-            <p className="text-lg font-bold">{stat.value}</p>
+            <p className="truncate text-lg font-bold">{stat.value}</p>
             <p className="text-xs text-muted-foreground">{stat.label}</p>
           </Card>
         ))}
@@ -163,9 +163,9 @@ export const StatsView = ({ expenses }: StatsViewProps) => {
           <div className="space-y-4">
             {categories.map((category) => (
               <div key={category.name}>
-                <div className="flex justify-between mb-1.5">
-                  <span className="text-sm font-medium">{category.name}</span>
-                  <span className="text-sm text-muted-foreground">
+                <div className="flex justify-between gap-3 mb-1.5">
+                  <span className="min-w-0 truncate text-sm font-medium">{category.name}</span>
+                  <span className="shrink-0 text-sm text-muted-foreground">
                     ${category.amount.toFixed(2)}
                   </span>
                 </div>

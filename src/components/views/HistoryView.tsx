@@ -72,7 +72,7 @@ export const HistoryView = ({ expenses, onDeleteExpense }: HistoryViewProps) => 
   }));
 
   return (
-    <div className="p-4 space-y-4 overflow-y-auto h-full">
+    <div className="p-4 space-y-4 overflow-y-auto overflow-x-hidden h-full">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-bold">Transaction History</h1>
         <Calendar className="w-5 h-5 text-muted-foreground" />
@@ -141,7 +141,7 @@ export const HistoryView = ({ expenses, onDeleteExpense }: HistoryViewProps) => 
       )}
 
       <p className="text-xs text-center text-muted-foreground">
-        📱 All data stored locally on your device
+        All data stays on your device
       </p>
     </div>
   );

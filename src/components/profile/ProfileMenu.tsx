@@ -36,7 +36,7 @@ export const ProfileMenu = ({ onShowPaywall }: ProfileMenuProps) => {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button aria-label="Profile and settings" className="focus:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-full">
-            <Avatar className="h-11 w-11 border border-border cursor-pointer transition-colors">
+            <Avatar className="h-10 w-10 shrink-0 border border-border cursor-pointer transition-colors">
               {profile.avatarUrl ? (
                 <AvatarImage src={profile.avatarUrl} alt={profile.name} />
               ) : null}

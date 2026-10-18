@@ -11,23 +11,23 @@ export const AppHeader = ({ monthlyTotal, onShowPaywall }: AppHeaderProps) => {
 
   return (
     <header
-      className="bg-background px-5 pb-3"
+      className="shrink-0 bg-background px-4 pb-3"
       style={{ paddingTop: "max(env(safe-area-inset-top), 1.5rem)" }}
     >
       <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-2.5">
-          <SproutLogo size={36} title="" />
-          <h1 className="text-[26px] leading-8 font-extrabold tracking-[-0.03em] text-primary">
+        <div className="flex min-w-0 items-center gap-2">
+          <SproutLogo size={32} title="" className="shrink-0" />
+          <h1 className="truncate text-[22px] leading-7 font-extrabold tracking-[-0.03em] text-primary">
             mayotti
           </h1>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex shrink-0 items-center gap-2.5">
           <div className="text-right">
-            <p className="text-[13px] leading-[18px] font-semibold text-muted-foreground">
+            <p className="text-[12px] leading-4 font-semibold text-muted-foreground whitespace-nowrap">
               Spent in {month}
             </p>
-            <p className="text-lg leading-6 font-extrabold tracking-[-0.02em] text-foreground">
+            <p className="text-[17px] leading-6 font-extrabold tracking-[-0.02em] text-foreground whitespace-nowrap">
               ${monthlyTotal.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </p>
           </div>
