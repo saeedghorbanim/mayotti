@@ -81,32 +81,48 @@ export const BudgetTracker = ({ budget, onSetBudget }: BudgetTrackerProps) => {
   const remaining = budget ? budget.limit_amount - budget.current_spent : 0;
   const overBy = budget ? budget.current_spent - budget.limit_amount : 0;
 
-  // Budget states: brand green under 80%, amber from 80%, red at 100%+.
-  // Color is always paired with words so it never carries the state alone.
-  const isWarning = percentage >= 80 && percentage < 100;
-  const isDanger = percentage >= 100;
+  // Budget states, paired with words so color never carries meaning alone:
+  //   under 75% used  → brand green
+  //   75% to <90%     → amber ("Heads up")
+  //   90% and over    → red ("Running low", then "Over budget" past 100%)
+  const isWarning = percentage >= 75 && percentage < 90;
+  const isLow = percentage >= 90 && percentage < 100;
+  const isOver = percentage >= 100;
+  const isDanger = isLow || isOver;
 
   const money = (n: number) =>
     `$${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
-  const alertMessage = isDanger
+  const alertMessage = isOver
     ? {
         lead: "Over budget.",
         text: `You're ${money(overBy)} over this month. Maybe ease up for a few days?`,
         className: "bg-destructive-tint text-foreground",
       }
-    : isWarning
+    : isLow
       ? {
-          lead: "Heads up!",
-          text: `You've got ${money(remaining)} left for the month.`,
-          className: "bg-warning-tint text-foreground",
+          lead: "Running low.",
+          text: `Only ${money(remaining)} left for the rest of the month.`,
+          className: "bg-destructive-tint text-foreground",
         }
-      : null;
+      : isWarning
+        ? {
+            lead: "Heads up!",
+            text: `You've got ${money(remaining)} left for the month.`,
+            className: "bg-warning-tint text-foreground",
+          }
+        : null;
+
+  // The bar shows what's left, so it drains as you spend (like a fuel gauge).
+  const leftPercentage = Math.max(0, 100 - percentage);
+  const toneText = isDanger ? "text-destructive" : isWarning ? "text-warning" : "text-foreground";
 
   return (
     <div className="bg-card rounded-3xl p-5 shadow-card flex flex-col gap-3">
       <div className="flex items-center justify-between">
-        <span className="text-[13px] leading-[18px] font-semibold text-muted-foreground">Monthly budget</span>
+        <span className="text-[13px] leading-[18px] font-semibold text-muted-foreground">
+          {isOver ? "Over budget" : "Left to spend"}
+        </span>
         <Button
           size="icon"
           variant="ghost"
@@ -121,16 +137,16 @@ export const BudgetTracker = ({ budget, onSetBudget }: BudgetTrackerProps) => {
         </Button>
       </div>
 
-      <div className="flex items-baseline gap-2">
-        <span className="text-[34px] leading-[38px] font-extrabold tracking-[-0.03em] text-foreground">
-          {money(budget?.current_spent || 0)}
+      <div className="flex items-baseline gap-2 min-w-0">
+        <span className={cn("text-[34px] leading-[38px] font-extrabold tracking-[-0.03em]", toneText)}>
+          {isOver ? `-${money(overBy)}` : money(remaining)}
         </span>
-        <span className="text-sm text-muted-foreground">of {money(budget?.limit_amount || 0)}</span>
+        <span className="text-sm text-muted-foreground whitespace-nowrap">of {money(budget?.limit_amount || 0)}</span>
       </div>
 
       <Progress
-        value={Math.min(percentage, 100)}
-        aria-label="Budget used"
+        value={leftPercentage}
+        aria-label="Budget left"
         className={cn(
           "h-2.5 bg-muted",
           isDanger ? "[&>div]:bg-destructive" : isWarning ? "[&>div]:bg-warning" : "[&>div]:bg-primary"
@@ -138,14 +154,12 @@ export const BudgetTracker = ({ budget, onSetBudget }: BudgetTrackerProps) => {
       />
 
       <div className="flex justify-between text-[13px] leading-[18px] text-muted-foreground">
-        {isDanger ? (
-          <span className="font-bold text-destructive">Over by {money(overBy)}</span>
-        ) : (
-          <span className={cn(isWarning && "font-bold text-warning")}>
-            <strong className={cn("font-bold", !isWarning && "text-foreground")}>{money(remaining)}</strong> left
-          </span>
-        )}
-        <span>{Math.round(Math.min(percentage, 999))}% used</span>
+        <span>
+          <strong className="font-bold text-foreground">{money(budget?.current_spent || 0)}</strong> spent
+        </span>
+        <span className={cn(isDanger && "font-bold text-destructive", isWarning && "font-bold text-warning")}>
+          {Math.round(Math.min(percentage, 999))}% used
+        </span>
       </div>
 
       {alertMessage && (
