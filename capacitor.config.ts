@@ -11,6 +11,14 @@ const config: CapacitorConfig = {
     // stops the whole app from being dragged sideways or under the status bar.
     scrollEnabled: false,
   },
+  plugins: {
+    Keyboard: {
+      // Shrink the web view when the keyboard opens so the chat box sits
+      // right above it instead of being hidden underneath.
+      resize: 'native',
+      resizeOnFullScreen: true,
+    },
+  },
 };
 
 export default config;

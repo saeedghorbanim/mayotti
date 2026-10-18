@@ -1,4 +1,6 @@
 import { createRoot } from "react-dom/client";
+import { Capacitor } from "@capacitor/core";
+import { Keyboard } from "@capacitor/keyboard";
 import App from "./App.tsx";
 import "./index.css";
 
@@ -9,5 +11,13 @@ const resetPageOffset = () => {
 };
 document.addEventListener("focusout", () => setTimeout(resetPageOffset, 60));
 window.visualViewport?.addEventListener("resize", () => setTimeout(resetPageOffset, 60));
+
+// Hide the iOS "< > Done" bar above the keyboard; the app has a single field.
+if (Capacitor.isNativePlatform()) {
+  Keyboard.setAccessoryBarVisible({ isVisible: false }).catch(() => {});
+  // While typing, hide the tab bar so the chat box sits directly on the keyboard.
+  Keyboard.addListener("keyboardWillShow", () => document.body.classList.add("keyboard-open"));
+  Keyboard.addListener("keyboardWillHide", () => document.body.classList.remove("keyboard-open"));
+}
 
 createRoot(document.getElementById("root")!).render(<App />);

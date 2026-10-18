@@ -102,6 +102,11 @@
   }
 }
 
+/* Tab bar hides while the keyboard is open (see main.tsx). */
+body.keyboard-open nav[aria-label="Main"] {
+  display: none;
+}
+
 /* Safe area for mobile devices */
 .safe-area-bottom {
   padding-bottom: env(safe-area-inset-bottom);

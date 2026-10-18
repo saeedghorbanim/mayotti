@@ -29,17 +29,32 @@ interface OnboardingState {
 
 const ONBOARDING_KEY = "mayotti_onboarding";
 
+// Every question starts with a sensible option already selected, so someone
+// in a hurry can tap Continue straight through onboarding. Personal questions
+// (gender, income) default to "Prefer not to say".
 const defaultAnswers: OnboardingAnswers = {
-  gender: null,
-  ageRange: null,
-  incomeRange: null,
-  spendingStyle: null,
-  topSpendingCategories: [],
-  biggestChallenge: null,
-  priorBudgetingExperience: null,
-  primaryGoal: null,
+  gender: "prefer_not_to_say",
+  ageRange: "25_34",
+  incomeRange: "prefer_not_to_say",
+  spendingStyle: "balanced",
+  topSpendingCategories: ["groceries", "dining"],
+  biggestChallenge: "losing_track",
+  priorBudgetingExperience: "tried_and_stopped",
+  primaryGoal: "track_spending",
   monthlySavingsGoal: 100,
-  notificationPreference: null,
+  notificationPreference: "important_only",
+};
+
+// Answers saved by older builds contain nulls / empty lists for unanswered
+// questions; drop those so the defaults above still apply.
+const withDefaults = (stored: Partial<OnboardingAnswers> | undefined): OnboardingAnswers => {
+  const merged = { ...defaultAnswers };
+  for (const [key, value] of Object.entries(stored ?? {})) {
+    if (value === null || value === undefined) continue;
+    if (Array.isArray(value) && value.length === 0) continue;
+    (merged as Record<string, unknown>)[key] = value;
+  }
+  return merged;
 };
 
 const defaultState: OnboardingState = {
@@ -64,7 +79,7 @@ const readStoredState = (): OnboardingState => {
       return {
         hasCompletedOnboarding: FORCE_ONBOARDING_ON_LAUNCH ? false : parsed.hasCompletedOnboarding === true,
         completedAt: parsed.completedAt || null,
-        answers: { ...defaultAnswers, ...parsed.answers },
+        answers: withDefaults(parsed.answers),
       };
     }
   } catch {
