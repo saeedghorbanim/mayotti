@@ -84,6 +84,15 @@
     font-family: 'Manrope', system-ui, -apple-system, sans-serif;
   }
 
+  /* iOS zooms the whole page into any text field under 16px when it's tapped,
+     and the app then stays zoomed (content cut off on the right, header under
+     the status bar). 16px on touch screens prevents that. */
+  @media (pointer: coarse) {
+    input, textarea, select {
+      font-size: 16px !important;
+    }
+  }
+
   html, body, #root {
     width: 100%;
     max-width: 100%;

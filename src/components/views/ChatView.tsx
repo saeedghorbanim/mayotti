@@ -515,7 +515,7 @@ export const ChatView = ({ budget, onAddExpense, onSetBudgetLimit, onShowPaywall
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder={isRecording ? "Listening…" : "Spent $12 on lunch…"}
-              className="flex-1 border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 px-0 text-[15px] h-11"
+              className="flex-1 border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 px-0 text-[16px] h-11"
               disabled={isLoading || isRecording}
             />
             <button

@@ -32,7 +32,7 @@ export const BudgetTracker = ({ budget, onSetBudget }: BudgetTrackerProps) => {
     setIsEditing(false);
     toast({
       title: 'Budget saved',
-      description: `Your monthly budget is now $${limitAmount.toFixed(2)}`,
+      description: `Your monthly budget is now $${limitAmount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
     });
   };
 
