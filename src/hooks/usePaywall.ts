@@ -3,7 +3,11 @@ import { Capacitor } from '@capacitor/core';
 import { RevenueCatUI, PAYWALL_RESULT, type PresentPaywallOptions } from '@revenuecat/purchases-capacitor-ui';
 import { SUBSCRIPTION_PRODUCT_ID } from './useInAppPurchase';
 
-export const usePaywall = (onPurchased?: (productId: string) => void) => {
+export const usePaywall = (
+  onPurchased?: (productId: string) => void,
+  // Called when the person closes the paywall without buying.
+  onDismissed?: () => void,
+) => {
   const [isPresenting, setIsPresenting] = useState(false);
 
   const presentPaywall = async (options?: PresentPaywallOptions): Promise<boolean> => {
@@ -19,6 +23,7 @@ export const usePaywall = (onPurchased?: (productId: string) => void) => {
         onPurchased?.(SUBSCRIPTION_PRODUCT_ID);
         return true;
       }
+      if (result === PAYWALL_RESULT.CANCELLED) onDismissed?.();
       return false;
     } catch (error) {
       console.error('Failed to present paywall:', error);

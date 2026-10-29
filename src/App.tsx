@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { AppToaster } from "@/components/feedback/AppToaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -13,6 +13,9 @@ import { Capacitor } from '@capacitor/core';
 import { useOnboarding } from "@/hooks/useOnboarding";
 import { useAppUsage } from "@/hooks/useAppUsage";
 import { HardPaywallGate } from "@/components/subscription/HardPaywallGate";
+
+// Dev-only preview of the paywall gift flow; not included in release builds.
+const DevGiftPreview = import.meta.env.DEV ? lazy(() => import("./pages/DevGiftPreview")) : null;
 
 const IOS_API_KEY = import.meta.env.VITE_REVENUECAT_IOS_KEY;
 
@@ -60,6 +63,9 @@ const App = () => {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={mainContent} />
+            {DevGiftPreview && (
+              <Route path="/dev/gift" element={<Suspense fallback={null}><DevGiftPreview /></Suspense>} />
+            )}
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
