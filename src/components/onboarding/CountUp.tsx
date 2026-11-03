@@ -8,10 +8,12 @@ interface CountUpProps {
   prefix?: string;
   suffix?: string;
   className?: string;
+  /** Custom formatting, e.g. currency with cents. Overrides prefix/suffix rounding. */
+  format?: (value: number) => string;
 }
 
 /** Counts a number up from 0 once, e.g. "$0" → "$600". */
-export const CountUp = ({ to, duration = 1.4, delay = 0, prefix = "", suffix = "", className }: CountUpProps) => {
+export const CountUp = ({ to, duration = 1.4, delay = 0, prefix = "", suffix = "", className, format }: CountUpProps) => {
   const reduceMotion = useReducedMotion();
   const [value, setValue] = useState(reduceMotion ? to : 0);
 
@@ -31,9 +33,15 @@ export const CountUp = ({ to, duration = 1.4, delay = 0, prefix = "", suffix = "
 
   return (
     <span className={className}>
-      {prefix}
-      {Math.round(value).toLocaleString("en-US")}
-      {suffix}
+      {format ? (
+        format(value)
+      ) : (
+        <>
+          {prefix}
+          {Math.round(value).toLocaleString("en-US")}
+          {suffix}
+        </>
+      )}
     </span>
   );
 };

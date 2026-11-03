@@ -25,7 +25,20 @@ export interface GiftDetails {
   percentOff: number | null; // e.g. 50
   period: "month" | "year";
   productId: string;
+  /** What the plan adds up to over 12 months, at the gift price and the regular price. */
+  yearTotal: number;
+  regularYearTotal: number | null;
+  currencyCode: string;
 }
+
+/** Formats an amount in the store's currency, e.g. 41.88 → "$41.88". */
+export const formatMoney = (amount: number, currencyCode: string) => {
+  try {
+    return new Intl.NumberFormat("en-US", { style: "currency", currency: currencyCode }).format(amount);
+  } catch {
+    return `$${amount.toFixed(2)}`;
+  }
+};
 
 interface StoredGift {
   revealedAt: string | null;
@@ -54,6 +67,9 @@ const PREVIEW_GIFT: GiftDetails = {
   percentOff: 50,
   period: "month",
   productId: "preview",
+  yearTotal: 3.49 * 12,
+  regularYearTotal: 6.99 * 12,
+  currencyCode: "USD",
 };
 
 export const useGiftOffer = (onPurchased?: (productId: string) => void) => {
@@ -92,6 +108,9 @@ export const useGiftOffer = (onPurchased?: (productId: string) => void) => {
             percentOff,
             period,
             productId: pkg.product.identifier,
+            yearTotal: period === "year" ? pkg.product.price : pkg.product.price * 12,
+            regularYearTotal: percentOff ? (period === "year" ? regularPrice : regularPrice * 12) : null,
+            currencyCode: pkg.product.currencyCode || "USD",
           });
         }
       } catch (e) {
