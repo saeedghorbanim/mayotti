@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { Button } from "@/components/ui/button";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { GiftBox } from "./GiftBox";
 import { GiftOfferCard } from "./GiftOfferCard";
@@ -11,9 +12,8 @@ interface GiftRevealProps {
   error: string | null;
   onRevealed: () => void;
   onClaim: () => void;
-  onClose: () => void;
   onRestore: () => void;
-  /** Skip the boxes and go straight to the offer (already opened before). */
+  /** The gift was opened before: start on the opened box with a Continue button. */
   startOpened?: boolean;
 }
 
@@ -29,7 +29,8 @@ const CONFETTI_COLORS = ["#1F6B4F", "#F2C14E", "#0D9488", "#EC4899", "#2563EB", 
   Shown when someone closes the paywall. They pick one of three gift boxes;
   every box holds the same gift, and nothing here suggests otherwise (no fake
   odds or prizes that can't be won). The chosen box shakes, pops open with
-  confetti, and the discounted offer slides up.
+  confetti, and the discounted offer slides up. Closing the offer comes back
+  to the opened box with a Continue button that brings the offer back.
 */
 export const GiftReveal = ({
   gift,
@@ -37,13 +38,15 @@ export const GiftReveal = ({
   error,
   onRevealed,
   onClaim,
-  onClose,
   onRestore,
   startOpened = false,
 }: GiftRevealProps) => {
   const reduceMotion = useReducedMotion();
-  const [picked, setPicked] = useState<number | null>(null);
-  const [phase, setPhase] = useState<"pick" | "shake" | "open" | "offer">(startOpened ? "offer" : "pick");
+  const [picked, setPicked] = useState<number | null>(startOpened ? 1 : null);
+  const [phase, setPhase] = useState<"pick" | "shake" | "open" | "opened" | "offer">(
+    startOpened ? "opened" : "pick"
+  );
+  const isOpen = phase === "open" || phase === "opened";
 
   const confetti = useMemo(
     () =>
@@ -102,10 +105,20 @@ export const GiftReveal = ({
                 className="mt-8"
               >
                 <h1 className="text-[28px] leading-[34px] font-extrabold tracking-[-0.02em] text-foreground">
-                  {phase === "open" ? "It's yours!" : "Wait, we have a gift for you"}
+                  {phase === "opened"
+                    ? "Your gift is waiting"
+                    : phase === "open"
+                      ? "It's yours!"
+                      : "Wait, we have a gift for you"}
                 </h1>
                 <p className="mt-2 text-[15px] text-muted-foreground">
-                  {phase === "open" ? "Unwrapping your offer…" : "Pick a box to unwrap it."}
+                  {phase === "opened"
+                    ? gift.percentOff
+                      ? `${gift.percentOff}% off Mayotti Premium, just for you.`
+                      : "A special price on Mayotti Premium, just for you."
+                    : phase === "open"
+                      ? "Unwrapping your offer…"
+                      : "Pick a box to unwrap it."}
                 </p>
               </motion.div>
 
@@ -134,26 +147,28 @@ export const GiftReveal = ({
                       >
                         <GiftBox
                           {...b}
-                          state={isPicked ? (phase === "shake" ? "shake" : phase === "open" ? "open" : "idle") : "idle"}
+                          state={isPicked ? (phase === "shake" ? "shake" : isOpen ? "open" : "idle") : "idle"}
                           delay={i * 0.35}
                           reduceMotion={reduceMotion ?? false}
                         />
-                        {isPicked && phase === "open" && (
-                          <motion.div
-                            className="absolute left-1/2 top-[38%] w-[46%] -translate-x-1/2"
-                            initial={{ y: 20, scale: 0.4, opacity: 0 }}
-                            animate={{ y: -34, scale: 1, opacity: 1 }}
-                            transition={{ type: "spring", stiffness: 240, damping: 14, delay: 0.15 }}
-                          >
-                            <SproutLogo size={56} title="" className="w-full h-auto drop-shadow-lg" />
-                          </motion.div>
+                        {isPicked && isOpen && (
+                          <div className="absolute inset-x-0 top-[30%] flex justify-center pointer-events-none">
+                            <motion.div
+                              className="w-[46%]"
+                              initial={{ y: 20, scale: 0.4, opacity: 0 }}
+                              animate={{ y: -34, scale: 1, opacity: 1 }}
+                              transition={{ type: "spring", stiffness: 240, damping: 14, delay: 0.15 }}
+                            >
+                              <SproutLogo size={56} title="" className="w-full h-auto drop-shadow-lg" />
+                            </motion.div>
+                          </div>
                         )}
                       </motion.button>
                     );
                   })}
                 </div>
 
-                {phase === "open" && (
+                {isOpen && (
                   <motion.div
                     aria-hidden="true"
                     className="pointer-events-none absolute left-1/2 top-1/2 w-[340px] h-[340px] -ml-[170px] -mt-[170px] rounded-full"
@@ -179,6 +194,28 @@ export const GiftReveal = ({
                 )}
               </div>
 
+              {phase === "opened" && (
+                <motion.div
+                  className="w-full mb-2"
+                  initial={{ opacity: 0, y: reduceMotion ? 0 : 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3, duration: 0.4 }}
+                >
+                  <motion.div
+                    animate={reduceMotion ? undefined : { scale: [1, 1.03, 1] }}
+                    transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                  >
+                    <Button
+                      size="lg"
+                      className="w-full h-14 rounded-full text-[17px] font-bold"
+                      onClick={() => setPhase("offer")}
+                    >
+                      Continue
+                    </Button>
+                  </motion.div>
+                </motion.div>
+              )}
+
               {phase === "pick" && (
                 <motion.p
                   initial={{ opacity: 0 }}
@@ -203,7 +240,7 @@ export const GiftReveal = ({
                 isPurchasing={isPurchasing}
                 error={error}
                 onClaim={onClaim}
-                onClose={onClose}
+                onClose={() => setPhase("opened")}
                 onRestore={onRestore}
               />
             </motion.div>
