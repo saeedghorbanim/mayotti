@@ -44,3 +44,17 @@ export async function toAiRequestError(response: Response): Promise<AiRequestErr
   }
   return new AiRequestError(response.status, code);
 }
+
+/**
+ * Turns an error into a readable string for logs. The iOS bridge prints Error
+ * objects as "{}", which hides what actually went wrong.
+ */
+export function describeError(error: unknown): string {
+  if (error instanceof AiRequestError) return `${error.message} [status ${error.status}]`;
+  if (error instanceof Error) return `${error.name}: ${error.message}`;
+  try {
+    return JSON.stringify(error);
+  } catch {
+    return String(error);
+  }
+}

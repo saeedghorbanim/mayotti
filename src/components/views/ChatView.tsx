@@ -9,7 +9,7 @@ import { BudgetTracker } from "@/components/budget/BudgetTracker";
 import { BudgetLimit, Expense } from "@/hooks/useLocalStorage";
 import { usePromptLimit, MONTHLY_PROMPT_LIMIT } from "@/hooks/usePromptLimit";
 import { Progress } from "@/components/ui/progress";
-import { AiRequestError, aiRequestHeaders, functionUrl, toAiRequestError } from "@/lib/aiRequest";
+import { AiRequestError, aiRequestHeaders, functionUrl, toAiRequestError, describeError } from "@/lib/aiRequest";
 
 interface ChatViewProps {
   budget: BudgetLimit | null;
@@ -161,7 +161,7 @@ export const ChatView = ({ budget, onAddExpense, onSetBudgetLimit, onShowPaywall
       const data = await response.json();
       return data;
     } catch (error) {
-      console.error("Receipt analysis error:", error);
+      console.error("Receipt analysis error:", describeError(error));
       throw error;
     } finally {
       setIsAnalyzingImage(false);
@@ -347,7 +347,7 @@ export const ChatView = ({ budget, onAddExpense, onSetBudgetLimit, onShowPaywall
       incrementPromptCount();
       
     } catch (error) {
-      console.error("Chat error:", error);
+      console.error("Chat error:", describeError(error), "| url:", functionUrl("chat"));
       // The server is the source of truth for subscription and quota
       if (error instanceof AiRequestError && (error.status === 401 || error.status === 403)) {
         onShowPaywall();

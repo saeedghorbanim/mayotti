@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback } from 'react';
-import { aiRequestHeaders, functionUrl } from '@/lib/aiRequest';
+import { aiRequestHeaders, functionUrl, describeError } from '@/lib/aiRequest';
 
 interface UseVoiceRecordingOptions {
   onTranscription?: (text: string) => void;
@@ -59,7 +59,7 @@ export const useVoiceRecording = ({ onTranscription, onError }: UseVoiceRecordin
                 onTranscription?.(data.text);
               }
             } catch (error) {
-              console.error('Transcription error:', error);
+              console.error('Transcription error:', describeError(error));
               onError?.('Failed to transcribe audio');
             } finally {
               setIsProcessing(false);
@@ -67,7 +67,7 @@ export const useVoiceRecording = ({ onTranscription, onError }: UseVoiceRecordin
           };
           reader.readAsDataURL(audioBlob);
         } catch (error) {
-          console.error('Transcription error:', error);
+          console.error('Transcription error:', describeError(error));
           onError?.('Failed to transcribe audio');
           setIsProcessing(false);
         }
@@ -76,7 +76,7 @@ export const useVoiceRecording = ({ onTranscription, onError }: UseVoiceRecordin
       mediaRecorder.start();
       setIsRecording(true);
     } catch (error) {
-      console.error('Recording error:', error);
+      console.error('Recording error:', describeError(error));
       stream?.getTracks().forEach(track => track.stop());
       onError?.('Could not access microphone');
     }
