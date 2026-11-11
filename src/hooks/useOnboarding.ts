@@ -69,7 +69,7 @@ const defaultState: OnboardingState = {
 // `hasCompletedOnboarding: parsed.hasCompletedOnboarding === true` — once
 // the RevenueCat paywall is fully configured and this no longer needs to
 // be forced open for testing.
-const FORCE_ONBOARDING_ON_LAUNCH = true;
+const FORCE_ONBOARDING_ON_LAUNCH = false;
 
 const readStoredState = (): OnboardingState => {
   try {
