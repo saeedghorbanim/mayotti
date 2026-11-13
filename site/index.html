@@ -3,27 +3,191 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Mayotti · AI expense tracker</title>
-<meta name="description" content="Mayotti: tell it what you spent and it does the rest. Log expenses by chat or voice, scan receipts, and stay on budget.">
+<title>Mayotti · AI expense tracker for iPhone</title>
+<meta name="description" content="Track spending without the busywork. Tell Mayotti what you spent by chat, voice or receipt photo, and it does the rest. Coming soon to the App Store.">
+<meta property="og:title" content="Mayotti · Track spending without the busywork">
+<meta property="og:description" content="Log expenses by chat, voice or receipt photo. Coming soon to the App Store.">
+<meta property="og:image" content="https://mayotti.com/images/og.jpg">
+<meta property="og:url" content="https://mayotti.com/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#F4F5F1">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/style.css">
+<link rel="stylesheet" href="/landing.css">
 </head>
-<body>
-<div class="wrap">
-<section class="hero">
-  <svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="#E5F0E9"/><path d="M32 30V18" stroke="#1F6B4F" stroke-width="3.5" stroke-linecap="round"/><path d="M32 22c-8 0-13-4-13-11 8 0 13 4 13 11z" fill="#1F6B4F"/><path d="M32 19c0-6 4-10 12-10 0 7-4 10-12 10z" fill="#1F6B4F" fill-opacity=".7"/><circle cx="32" cy="42" r="13" fill="#1F6B4F"/><circle cx="32" cy="42" r="8.5" fill="none" stroke="#fff" stroke-opacity=".45" stroke-width="2"/></svg>
-  <h1>mayotti</h1>
-  <p>Track spending without the busywork.</p>
+<body class="landing">
+
+<header class="nav">
+  <div class="lw">
+    <a class="brand" href="/"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="#E5F0E9"/><path d="M32 30V18" stroke="#1F6B4F" stroke-width="3.5" stroke-linecap="round"/><path d="M32 22c-8 0-13-4-13-11 8 0 13 4 13 11z" fill="#1F6B4F"/><path d="M32 19c0-6 4-10 12-10 0 7-4 10-12 10z" fill="#1F6B4F" fill-opacity=".7"/><circle cx="32" cy="42" r="13" fill="#1F6B4F"/><circle cx="32" cy="42" r="8.5" fill="none" stroke="#fff" stroke-opacity=".45" stroke-width="2"/></svg>mayotti</a>
+    <nav class="nav-links">
+      <a class="hide-sm" href="#how">How it works</a>
+      <a class="hide-sm" href="#features">Features</a>
+      <a class="hide-sm" href="#faq">FAQ</a>
+      <a class="btn btn-brand btn-sm" data-appstore href="#">Coming soon</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<section class="hero2">
+  <div class="lw">
+    <div>
+      <span class="eyebrow"><span class="dot"></span>Coming soon to iPhone</span>
+      <h1>Track spending without the <mark>busywork</mark></h1>
+      <p class="lead">Just tell Mayotti what you spent. Type it, say it, or snap a receipt, and your AI money buddy logs it, keeps your balance clear, and warns you before you run low.</p>
+      <div class="cta-row">
+        <a class="btn btn-store" data-appstore href="#">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></svg>
+          <span><small data-appstore-label>Coming soon to the</small>App Store</span>
+        </a>
+        <a class="btn btn-ghost" href="#how">See how it works</a>
+      </div>
+      <p class="note">For iPhone · Your expenses stay on your device</p>
+    </div>
+    <div class="phones" aria-hidden="true">
+      <div class="phone p2"><img src="/images/screen-stats.webp" alt="" loading="lazy"></div>
+      <div class="phone p1"><img src="/images/screen-chat.webp" alt=""></div>
+      <div class="phone p3"><img src="/images/screen-receipt.webp" alt="" loading="lazy"></div>
+      <div class="coin" style="width:58px;height:58px;left:4%;top:20px;font-size:26px">$</div>
+      <div class="coin" style="width:44px;height:44px;right:6%;top:0;font-size:20px;animation-delay:1s">$</div>
+      <div class="coin" style="width:40px;height:40px;right:0;bottom:120px;font-size:18px;animation-delay:2s">$</div>
+    </div>
+  </div>
 </section>
 
-<div class="card"><strong>Log expenses by chat or voice.</strong> Just say what you spent.</div>
-<div class="card"><strong>Scan receipts in a snap.</strong> The amount and category are filled in for you.</div>
-<div class="card"><strong>Know your balance.</strong> Clear warnings before you run low.</div>
-<div class="card"><strong>Private by design.</strong> Your expenses stay on your device. No accounts, no tracking.</div>
+<section class="blk" id="how">
+  <div class="lw center reveal">
+    <div class="kicker">How it works</div>
+    <h2>Logging an expense takes seconds</h2>
+    <p class="sub2">No forms, no menus, no picking categories. Mayotti understands everyday language.</p>
+    <div class="steps" style="text-align:left">
+      <div class="step"><span class="num">1</span><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.5 7.2L4 20l1-4.5A8 8 0 1 1 21 12z"/></svg></div><h3>Say what you spent</h3><p>"Spent $18 on lunch at Chipotle." Type it or just say it.</p></div>
+      <div class="step"><span class="num">2</span><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div><h3>Mayotti logs it</h3><p>The amount, store and category are filled in for you, instantly.</p></div>
+      <div class="step"><span class="num">3</span><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg></div><h3>Stay on track</h3><p>Your balance updates, and you get a heads-up before money runs low.</p></div>
+    </div>
+  </div>
+</section>
 
-<footer><a href="/privacy">Privacy Policy</a><a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/">Terms of Use</a><a href="/support">Support</a><span>© 2026 Mayotti</span></footer>
-</div>
+<section class="lw">
+  <div class="spot reveal">
+    <div class="txt">
+      <div class="kicker">Chat &amp; voice</div>
+      <h3>Like texting a friend who's great with money</h3>
+      <p>Tell Mayotti about your spending the way you'd tell a friend. It replies with what it logged and how you're doing.</p>
+      <ul class="ticks"><li>Plain-English expense logging</li><li>Voice input: tap the mic and talk</li><li>Update your budget by chat, too</li></ul>
+    </div>
+    <div class="shot"><div class="phone"><img src="/images/screen-voice.webp" alt="Mayotti logging a dinner expense from a voice message" loading="lazy"></div></div>
+  </div>
+  <div class="spot rev reveal">
+    <div class="txt">
+      <div class="kicker">Receipt scanning</div>
+      <h3>Snap a receipt. Done.</h3>
+      <p>Take a photo of any receipt and Mayotti reads the total, the store and the category, then adds it for you.</p>
+      <ul class="ticks"><li>Works with paper receipts</li><li>No typing amounts</li><li>Categorized automatically</li></ul>
+    </div>
+    <div class="shot"><div class="phone"><img src="/images/screen-receipt.webp" alt="Mayotti reading a grocery receipt" loading="lazy"></div></div>
+  </div>
+  <div class="spot reveal">
+    <div class="txt">
+      <div class="kicker">Stats &amp; insights</div>
+      <h3>Know where every dollar goes</h3>
+      <p>See your spending by category, compare with last month, and get saving tips based on your own habits.</p>
+      <ul class="ticks"><li>Spending by category</li><li>Month-over-month comparison</li><li>Recurring expenses detected automatically</li></ul>
+    </div>
+    <div class="shot"><div class="phone"><img src="/images/screen-stats.webp" alt="Mayotti stats by category" loading="lazy"></div></div>
+  </div>
+</section>
+
+<section class="blk" id="features">
+  <div class="lw center reveal">
+    <div class="kicker">Features</div>
+    <h2>Everything you need, nothing you don't</h2>
+    <div class="grid6" style="text-align:left">
+      <div class="feat"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.5 7.2L4 20l1-4.5A8 8 0 1 1 21 12z"/></svg></div><h4>AI chat logging</h4><p>Type expenses in everyday language.</p></div>
+      <div class="feat"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></div><h4>Voice input</h4><p>Say it out loud, Mayotti writes it down.</p></div>
+      <div class="feat"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h12v20l-3-2-3 2-3-2-3 2z"/><path d="M9 7h6M9 11h6M9 15h4"/></svg></div><h4>Receipt scanning</h4><p>Totals and categories read from a photo.</p></div>
+      <div class="feat"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="3"/><path d="M16 12.5h2M3 10h18"/></svg></div><h4>Clear balance</h4><p>One number: what you have left.</p></div>
+      <div class="feat"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg></div><h4>Low-balance warnings</h4><p>A heads-up before you run out.</p></div>
+      <div class="feat"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg></div><h4>Recurring detection</h4><p>Spots subscriptions and regular bills.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="lw reveal">
+  <div class="dark">
+    <svg class="shield" viewBox="0 0 24 30" aria-hidden="true"><path d="M12 1 2 5v8c0 7 4.3 13 10 16 5.7-3 10-9 10-16V5z" fill="#2E8A66" stroke="#6FD3A6" stroke-width="1"/><rect x="8" y="12" width="8" height="7" rx="1.5" fill="#fff"/><path d="M9.5 12V10a2.5 2.5 0 0 1 5 0v2" stroke="#fff" stroke-width="1.6" fill="none"/></svg>
+    <div class="kicker" style="color:#6FD3A6">Privacy</div>
+    <h2>Private by design</h2>
+    <p class="sub2">Your expenses and budget are stored only on your iPhone. We don't have accounts, we don't run ads, and we never sell your data.</p>
+    <div class="pills"><span>No accounts</span><span>No ads</span><span>No tracking</span><span class="g">Data stays on your device</span></div>
+    <p style="margin-top:24px"><a href="/privacy" style="color:#6FD3A6;font-weight:700">Read our privacy policy</a></p>
+  </div>
+</section>
+
+<section class="blk" id="faq">
+  <div class="lw reveal">
+    <div class="center"><div class="kicker">FAQ</div><h2>Questions, answered</h2></div>
+    <div class="faq">
+      <details><summary>When can I download Mayotti?</summary><p>Mayotti is coming soon to the App Store for iPhone. This page will link straight to it as soon as it's live.</p></details>
+      <details><summary>How much does it cost?</summary><p>Mayotti requires a subscription, with monthly and yearly plans. Prices are shown in the app before you subscribe, and you can cancel anytime in your iPhone's Settings.</p></details>
+      <details><summary>Where is my data stored?</summary><p>Your expenses and budget stay on your device. When you use AI features, the message, photo or recording is processed to give you an answer and isn't stored by us. See the <a href="/privacy">privacy policy</a> for details.</p></details>
+      <details><summary>Do I need to create an account?</summary><p>No. There's no sign-up and no login. Your subscription is linked to your Apple ID, and you can restore it on a new phone.</p></details>
+      <details><summary>Does it connect to my bank?</summary><p>No. Mayotti never asks for bank logins. You log spending by chat, voice or receipt photo, so you stay in control of what's recorded.</p></details>
+      <details><summary>How do I get help?</summary><p>Email <a href="mailto:support@mayotti.com">support@mayotti.com</a> or visit our <a href="/support">support page</a>.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="lw reveal">
+  <div class="final">
+    <h2>Spend smarter, starting soon</h2>
+    <p>Mayotti is coming to the App Store. Want a heads-up when it launches?</p>
+    <div class="cta-row" style="justify-content:center">
+      <a class="btn btn-store" data-appstore href="#">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></svg>
+        <span><small data-appstore-label>Coming soon to the</small>App Store</span>
+      </a>
+      <a class="btn btn-ghost" href="mailto:support@mayotti.com?subject=Notify%20me%20when%20Mayotti%20launches">Notify me</a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="big">
+  <div class="lw">
+    <span>© 2026 Mayotti</span>
+    <nav><a href="/privacy">Privacy Policy</a><a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/">Terms of Use</a><a href="/support">Support</a><a href="mailto:support@mayotti.com">support@mayotti.com</a></nav>
+  </div>
+</footer>
+
+<script>
+  // App Store link: paste the real link here when Mayotti is live, e.g.
+  // "https://apps.apple.com/app/mayotti/id1234567890". While it's empty, the
+  // buttons say "Coming soon" and don't navigate anywhere.
+  const APP_STORE_URL = "";
+
+  document.querySelectorAll("[data-appstore]").forEach((a) => {
+    if (APP_STORE_URL) {
+      a.href = APP_STORE_URL;
+      a.target = "_blank";
+      a.rel = "noopener";
+      if (a.classList.contains("btn-sm")) a.textContent = "Download";
+    } else {
+      a.href = "#faq";
+    }
+  });
+  document.querySelectorAll("[data-appstore-label]").forEach((el) => {
+    el.textContent = APP_STORE_URL ? "Download on the" : "Coming soon to the";
+  });
+
+  // Fade sections in as they scroll into view.
+  const io = "IntersectionObserver" in window ? new IntersectionObserver((entries) => {
+    entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
+  }, { threshold: 0.12 }) : null;
+  document.querySelectorAll(".reveal").forEach((el) => (io ? io.observe(el) : el.classList.add("in")));
+</script>
 </body>
 </html>

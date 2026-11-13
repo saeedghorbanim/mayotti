@@ -1,14 +1,17 @@
 # mayotti.com
 
-Static pages for the public website, deployed as-is (no build step):
+Public website for the Mayotti iPhone app, served by GitHub Pages at https://mayotti.com.
 
-- `/` – index.html (simple landing page)
-- `/privacy` – privacy.html (linked from the app, the RevenueCat paywall and App Store Connect)
-- `/support` – support.html (App Store Connect "Support URL")
+- `/` – index.html (landing page; styles in landing.css, screenshots in images/)
+- `/privacy` – privacy.html (linked from the app, the paywall and App Store Connect)
+- `/support` – support.html (App Store Connect Support URL)
 
 Terms of Use link to Apple's standard EULA:
 https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 
-Hosting: Cloudflare Pages (or any static host) with the build output directory set to `site`
-and no build command. Keep the privacy policy in sync with what the app actually does
-(see "Data Flow" in /CLAUDE.md) and update the "Effective" date when it changes.
+Plain static files, no build step. `CNAME` sets the custom domain; `.nojekyll` serves files as-is.
+Keep the privacy policy in sync with what the app actually does, and update its "Effective" date when it changes.
+
+## App Store link
+When Mayotti is live, set `APP_STORE_URL` near the bottom of `index.html` to the real App Store link.
+All "Coming soon" buttons then switch to "Download on the App Store" automatically.
