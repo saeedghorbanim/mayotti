@@ -321,7 +321,9 @@ const Onboarding = ({ answers, updateAnswer, onComplete }: OnboardingProps) => {
                 Checking...
               </>
             ) : (
-              "Already got an account? Log in"
+              <>
+                Already subscribed?&nbsp;<span className="font-bold text-primary">Restore</span>
+              </>
             )}
           </Button>
         </div>
