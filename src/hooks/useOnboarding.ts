@@ -42,7 +42,7 @@ const defaultAnswers: OnboardingAnswers = {
   priorBudgetingExperience: "tried_and_stopped",
   primaryGoal: "track_spending",
   monthlySavingsGoal: 100,
-  notificationPreference: "important_only",
+  notificationPreference: "daily",
 };
 
 // Answers saved by older builds contain nulls / empty lists for unanswered

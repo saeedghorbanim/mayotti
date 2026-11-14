@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { AppHeader } from "@/components/layout/AppHeader";
 import { ChatView } from "@/components/views/ChatView";
@@ -8,14 +8,29 @@ import { HistoryView } from "@/components/views/HistoryView";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { useAppUsage } from "@/hooks/useAppUsage";
 import { usePaywall } from "@/hooks/usePaywall";
+import { useOnboarding } from "@/hooks/useOnboarding";
+import { checkBalanceAlert, initReminders } from "@/lib/reminders";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("chat");
   const { expenses, budget, deleteExpense, addExpense, setBudgetLimit } = useLocalStorage();
   const { setSubscriptionActive } = useAppUsage();
   const { presentPaywall } = usePaywall(setSubscriptionActive);
+  const { answers } = useOnboarding();
 
-  // Voluntary paywall trigger: Settings' "Upgrade to Pro" and the monthly
+  // Reminders: ask for notification permission once and keep the nudge in
+  // sync with the user's setting.
+  useEffect(() => {
+    initReminders(answers?.notificationPreference);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Low-balance alerts (always on): checked whenever the budget changes.
+  useEffect(() => {
+    if (budget) checkBalanceAlert(budget.limit_amount, budget.current_spent);
+  }, [budget?.limit_amount, budget?.current_spent]);
+
+  // Voluntary paywall trigger: Settings' "View Plans" and the monthly
   // AI-prompt cap in ChatView. The mandatory subscription gate itself lives
   // in App.tsx, before this page ever mounts.
   const handleShowPaywall = () => {

@@ -156,14 +156,14 @@ const QUESTIONS: (QuestionConfig & { required: boolean })[] = [
   },
   {
     id: "notificationPreference",
-    question: "How often should we check in?",
+    question: "Want a reminder to log your spending?",
+    helper: "You can change this anytime in Settings. We'll always alert you if your balance runs low.",
     inputType: "single-select",
     required: true,
     options: [
-      { value: "daily", label: "Daily" },
-      { value: "weekly", label: "Weekly" },
-      { value: "important_only", label: "Important only" },
-      { value: "none", label: "None" },
+      { value: "daily", label: "Every evening" },
+      { value: "weekly", label: "Once a week" },
+      { value: "none", label: "No reminders" },
     ],
   },
 ];

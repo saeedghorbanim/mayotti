@@ -91,6 +91,11 @@ All user data (expenses, budget, onboarding answers, subscription status) lives 
 - `src/App.tsx` initializes RevenueCat on native platforms only via `Capacitor.isNativePlatform()`
 - Dashboard setup required before the paywall renders anything: create the `premium` entitlement, attach the App Store product to it, create an Offering and mark it current, then design and attach a Paywall to that offering in RevenueCat's Paywalls builder
 
+### Reminders and alerts
+
+- `src/lib/reminders.ts` (`@capacitor/local-notifications`, all on-device, no server): **nudges** (daily 8pm or Sunday 7pm "log your spending"; user-controlled from the onboarding question and Settings → Reminders, can be turned off) and **balance alerts** (below 10% of the budget, or below zero; always on, at most once per level per month, matching the red state of the balance card).
+- `Index.tsx` calls `initReminders` once (asks notification permission the first time, adopts the onboarding answer) and `checkBalanceAlert` whenever the budget changes. Prefs live in localStorage `mayotti_reminders`, sent alerts in `mayotti_balance_alerts`.
+
 ### State Management Pattern
 
 The app uses localStorage-backed custom hooks rather than a global store:

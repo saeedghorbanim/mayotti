@@ -1,4 +1,5 @@
-import { CreditCard, ExternalLink, Trash2, RefreshCw } from "lucide-react";
+import { useState } from "react";
+import { CreditCard, ExternalLink, Trash2, RefreshCw, Bell } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -11,6 +12,14 @@ import { useAppUsage } from "@/hooks/useAppUsage";
 import { useInAppPurchase } from "@/hooks/useInAppPurchase";
 import { toast } from "sonner";
 import { Capacitor } from "@capacitor/core";
+import { getReminderPrefs, setNudgeFrequency, type NudgeFrequency } from "@/lib/reminders";
+import { cn } from "@/lib/utils";
+
+const NUDGE_OPTIONS: { value: NudgeFrequency; label: string }[] = [
+  { value: "daily", label: "Every evening" },
+  { value: "weekly", label: "Weekly" },
+  { value: "none", label: "Off" },
+];
 
 interface SettingsDialogProps {
   open: boolean;
@@ -27,6 +36,22 @@ export const SettingsDialog = ({ open, onOpenChange, onShowPaywall }: SettingsDi
   };
   
   const { restore, isLoading: isRestoring } = useInAppPurchase(handleRestoreSuccess);
+  const [nudge, setNudge] = useState<NudgeFrequency>(() => getReminderPrefs()?.frequency ?? "daily");
+
+  const changeNudge = async (value: NudgeFrequency) => {
+    setNudge(value);
+    const ok = await setNudgeFrequency(value);
+    if (value === "none") {
+      toast.success("Reminders turned off", { description: "You'll still get an alert if your balance runs low." });
+    } else if (ok) {
+      toast.success(value === "daily" ? "Reminder set for every evening" : "Weekly reminder set");
+    } else {
+      toast.error("Notifications are off for Mayotti", {
+        description: "Turn them on in iPhone Settings → Mayotti → Notifications.",
+        duration: 6000,
+      });
+    }
+  };
 
   const handleManageSubscription = () => {
     // Deep link to App Store subscription management (iOS only for now)
@@ -54,7 +79,7 @@ export const SettingsDialog = ({ open, onOpenChange, onShowPaywall }: SettingsDi
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[400px]">
+      <DialogContent className="sm:max-w-[400px] max-h-[85dvh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Settings</DialogTitle>
         </DialogHeader>
@@ -71,7 +96,7 @@ export const SettingsDialog = ({ open, onOpenChange, onShowPaywall }: SettingsDi
                 <div className="flex items-center gap-2">
                   <CreditCard className="h-4 w-4 text-primary" />
                   <span className="font-medium">
-                    {subscription.isSubscribed ? "Mayotti Pro" : "Free Plan"}
+                    Mayotti Premium
                   </span>
                 </div>
                 {subscription.isSubscribed && (
@@ -81,15 +106,11 @@ export const SettingsDialog = ({ open, onOpenChange, onShowPaywall }: SettingsDi
                 )}
               </div>
 
-              {subscription.isSubscribed ? (
-                <p className="text-sm text-muted-foreground">
-                  Your subscription renews monthly at $2.99 USD
-                </p>
-              ) : (
-                <p className="text-sm text-muted-foreground">
-                  Upgrade to Pro for unlimited expense tracking
-                </p>
-              )}
+              <p className="text-sm text-muted-foreground">
+                {subscription.isSubscribed
+                  ? "Your plan and renewal date are shown in your Apple ID subscriptions."
+                  : "Subscribe to log expenses by chat, voice and receipt photos."}
+              </p>
 
               {subscription.isSubscribed ? (
                 <Button
@@ -109,7 +130,7 @@ export const SettingsDialog = ({ open, onOpenChange, onShowPaywall }: SettingsDi
                   }}
                 >
                   <CreditCard className="h-4 w-4 mr-2" />
-                  Upgrade to Pro
+                  View Plans
                 </Button>
               )}
 
@@ -137,6 +158,40 @@ export const SettingsDialog = ({ open, onOpenChange, onShowPaywall }: SettingsDi
                   Cancel anytime from your device's subscription settings
                 </p>
               )}
+            </div>
+          </div>
+
+          <Separator />
+
+          {/* Reminders Section */}
+          <div className="space-y-3">
+            <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+              Reminders
+            </h3>
+            <div className="bg-muted/50 rounded-lg p-4 space-y-3">
+              <div className="flex items-center gap-2">
+                <Bell className="h-4 w-4 text-primary" />
+                <span className="font-medium">Reminder to log spending</span>
+              </div>
+              <div className="grid grid-cols-3 gap-1 rounded-xl bg-background p-1" role="radiogroup" aria-label="Reminder frequency">
+                {NUDGE_OPTIONS.map((o) => (
+                  <button
+                    key={o.value}
+                    role="radio"
+                    aria-checked={nudge === o.value}
+                    onClick={() => changeNudge(o.value)}
+                    className={cn(
+                      "h-10 rounded-lg text-sm font-semibold transition-colors",
+                      nudge === o.value ? "bg-primary text-primary-foreground" : "text-muted-foreground"
+                    )}
+                  >
+                    {o.label}
+                  </button>
+                ))}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Low-balance alerts always stay on, so you'll know before you run out.
+              </p>
             </div>
           </div>
 
