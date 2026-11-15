@@ -137,7 +137,7 @@ export const useInAppPurchase = (onPurchaseSuccess?: (productId: string) => void
     if (state.product?.product?.priceString) {
       return state.product.product.priceString;
     }
-    return '$2.99';
+    return '';
   };
 
   return {

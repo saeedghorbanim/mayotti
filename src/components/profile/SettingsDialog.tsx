@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import { Capacitor } from "@capacitor/core";
 import { getReminderPrefs, setNudgeFrequency, type NudgeFrequency } from "@/lib/reminders";
 import { cn } from "@/lib/utils";
+import { useSubscriptionDetails } from "@/hooks/useSubscriptionDetails";
 
 const NUDGE_OPTIONS: { value: NudgeFrequency; label: string }[] = [
   { value: "daily", label: "Every evening" },
@@ -36,6 +37,8 @@ export const SettingsDialog = ({ open, onOpenChange, onShowPaywall }: SettingsDi
   };
   
   const { restore, isLoading: isRestoring } = useInAppPurchase(handleRestoreSuccess);
+  const plan = useSubscriptionDetails(open && subscription.isSubscribed);
+  const fmtDate = (d: Date) => d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
   const [nudge, setNudge] = useState<NudgeFrequency>(() => getReminderPrefs()?.frequency ?? "daily");
 
   const changeNudge = async (value: NudgeFrequency) => {
@@ -106,11 +109,25 @@ export const SettingsDialog = ({ open, onOpenChange, onShowPaywall }: SettingsDi
                 )}
               </div>
 
-              <p className="text-sm text-muted-foreground">
-                {subscription.isSubscribed
-                  ? "Your plan and renewal date are shown in your Apple ID subscriptions."
-                  : "Subscribe to log expenses by chat, voice and receipt photos."}
-              </p>
+              {subscription.isSubscribed && plan ? (
+                <div className="text-sm space-y-0.5">
+                  <p className="font-semibold text-foreground">
+                    {plan.planName}
+                    {plan.price && plan.per ? ` · ${plan.price}/${plan.per}` : ""}
+                  </p>
+                  {plan.date && (
+                    <p className="text-muted-foreground">
+                      {plan.willRenew ? `Renews ${fmtDate(plan.date)}` : `Ends ${fmtDate(plan.date)} · won't renew`}
+                    </p>
+                  )}
+                </div>
+              ) : (
+                <p className="text-sm text-muted-foreground">
+                  {subscription.isSubscribed
+                    ? "Your plan details are in your Apple ID subscriptions."
+                    : "Subscribe to log expenses by chat, voice and receipt photos."}
+                </p>
+              )}
 
               {subscription.isSubscribed ? (
                 <Button
