@@ -67,13 +67,13 @@ export const QuestionSlide = ({ config, value, onChange }: QuestionSlideProps) =
       {config.inputType === "slider" && config.sliderConfig && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }} className="px-2 pt-6">
           <p className="text-center font-display text-4xl font-bold text-primary mb-8">
-            {config.sliderConfig.formatValue(value ?? config.sliderConfig.min)}
+            {config.sliderConfig.formatValue((value as number) ?? config.sliderConfig.min)}
           </p>
           <Slider
             min={config.sliderConfig.min}
             max={config.sliderConfig.max}
             step={config.sliderConfig.step}
-            value={[value ?? config.sliderConfig.min]}
+            value={[(value as number) ?? config.sliderConfig.min]}
             onValueChange={([v]) => onChange(v)}
           />
         </motion.div>

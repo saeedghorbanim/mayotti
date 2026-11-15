@@ -99,7 +99,9 @@ export const ChatView = ({ budget, onAddExpense, onSetBudgetLimit, onShowPaywall
     try {
       const stored = localStorage.getItem('mayotti_budget');
       if (stored) setLocalBudget(JSON.parse(stored));
-    } catch {}
+    } catch {
+      // Unreadable stored budget: keep the current one.
+    }
   };
 
   // Wrapper that updates local state immediately, without waiting for parent re-render
@@ -173,7 +175,7 @@ export const ChatView = ({ budget, onAddExpense, onSetBudgetLimit, onShowPaywall
 
     // Check monthly prompt limit (the paywall already ensures only subscribers reach this screen)
     if (hasReachedLimit()) {
-      onShowPaywall();
+      toast({ title: "Monthly limit reached", description: getLimitReachedMessage() });
       return;
     }
 

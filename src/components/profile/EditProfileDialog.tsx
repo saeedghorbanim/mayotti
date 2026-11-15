@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useProfile } from "@/hooks/useProfile";
-import { toast } from "sonner";
+import { toast } from "@/lib/notify";
 
 interface EditProfileDialogProps {
   open: boolean;

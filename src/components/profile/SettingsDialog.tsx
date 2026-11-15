@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useAppUsage } from "@/hooks/useAppUsage";
 import { useInAppPurchase } from "@/hooks/useInAppPurchase";
-import { toast } from "sonner";
+import { toast } from "@/lib/notify";
 import { Capacitor } from "@capacitor/core";
 import { getReminderPrefs, setNudgeFrequency, type NudgeFrequency } from "@/lib/reminders";
 import { cn } from "@/lib/utils";

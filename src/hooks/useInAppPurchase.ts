@@ -41,11 +41,10 @@ export const useInAppPurchase = (onPurchaseSuccess?: (productId: string) => void
     try {
       await new Promise(resolve => setTimeout(resolve, 500));
       const result = await Purchases.getOfferings();
-      console.log('[RC] raw offerings object:', JSON.stringify(result));
 
       // The Capacitor plugin returns { offerings: { current: {...}, all: {...} } }
       // or sometimes the data is nested — try both:
-      const offerings = result?.offerings ?? result;
+      const offerings = (result as unknown as { offerings?: typeof result }).offerings ?? result;
       const currentOffering = offerings?.current;
       const monthlyPackage =
         currentOffering?.monthly
@@ -56,7 +55,6 @@ export const useInAppPurchase = (onPurchaseSuccess?: (productId: string) => void
         ?? currentOffering?.availablePackages?.[0]
         ?? null;
 
-      console.log('[RC] monthly package:', JSON.stringify(monthlyPackage));
 
       setState(prev => ({
         ...prev,

@@ -68,7 +68,7 @@ All user data (expenses, budget, onboarding answers, subscription status) lives 
 - Answers (`OnboardingAnswers`) are persisted incrementally to localStorage as each question is answered, and are only used to personalize the insight/results slides (spending breakdown chart, savings projection chart, target date, "$X you could keep" figure) — never wired into `useLocalStorage`'s real `Expense`/`BudgetLimit` records
 - The final two steps (`CalculatingSlide`, `ResultsSlide`) replace the old direct "Start Saving" completion: `CalculatingSlide` auto-advances itself via an internal timer (no back/skip) once its progress animation finishes, then `ResultsSlide` shows the personalized payoff and is the step that actually calls `onComplete`
 - `framer-motion` was added for onboarding page transitions and staggered reveals — it's the first animation library in the codebase; existing Tailwind keyframes (`fade-in`, `slide-in`, `float`, `pulse-glow`) are still used for decorative/infinite-loop effects
-- The insight/results pages are the first real usage of `recharts` / `src/components/ui/chart.tsx` in the app (previously installed but unused)
+- The insight/results slides use custom animated SVG/framer-motion graphics (`SpendingBreakdownInsight`, `SavingsProjectionInsight`, `ResultsSlide`, shared `CountUp`), not recharts
 
 ### Subscription Model (Hard Paywall)
 
@@ -76,7 +76,7 @@ All user data (expenses, budget, onboarding answers, subscription status) lives 
 - Gated in `src/App.tsx`: after `hasCompletedOnboarding` is true, if `Capacitor.isNativePlatform()` and `!subscription.isSubscribed`, it renders `HardPaywallGate` (`src/components/subscription/HardPaywallGate.tsx`) instead of `Index`. That gate auto-presents the RevenueCat-hosted paywall on mount and again on tapping "View Plans" if dismissed.
 - **Web/simulator bypasses the gate** (no real IAP there) so `npm run dev` stays usable for local development — you cannot demo the actual paywall-gated experience outside a native build with sandbox/Test Store purchases.
 - The paywall UI itself is **not built in this repo** — it's designed remotely in the RevenueCat dashboard (Paywalls builder) and rendered natively via `RevenueCatUI.presentPaywall()` from `@revenuecat/purchases-capacitor-ui`. Changing paywall copy/pricing/layout does not require an app update.
-- `usePaywall` (`src/hooks/usePaywall.ts`) wraps `RevenueCatUI.presentPaywall()`; treats `PAYWALL_RESULT.PURCHASED`/`RESTORED` as success and calls the `onPurchased` callback (typically `useAppUsage().setSubscriptionActive`). Used both by the mandatory `HardPaywallGate` and by voluntary triggers (Settings' "Upgrade to Pro", `ChatView`'s monthly AI-prompt cap).
+- `usePaywall` (`src/hooks/usePaywall.ts`) wraps `RevenueCatUI.presentPaywall()`; treats `PAYWALL_RESULT.PURCHASED`/`RESTORED` as success and calls the `onPurchased` callback (typically `useAppUsage().setSubscriptionActive`). Used both by the mandatory `HardPaywallGate` and by Settings' "View Plans". Hitting the monthly AI cap shows a limit message, never the paywall (the user is already subscribed); a server 401/403 does show the paywall.
 - **Gift offer after closing the paywall:** the first time someone closes the paywall from `HardPaywallGate` (`PAYWALL_RESULT.CANCELLED`, surfaced via `usePaywall`'s `onDismissed`), `GiftReveal` shows three gift boxes; any box opens to the same discounted plan (`GiftOfferCard`). This is deliberately not a rigged wheel: no fake odds or prizes that can't be won. Data comes from `useGiftOffer`: RevenueCat offering `gift` (one package, a separately priced App Store product in the same subscription group, e.g. `com.mayotti.subscription.monthly.gift`); the % off is computed against the same-length package in the current offering. If the `gift` offering doesn't exist, the flow never appears. Once opened (`mayotti_gift` in localStorage), the gift replaces the plain "View Plans" gate: it shows one wrapped box ("Your gift is waiting"); tapping it shakes and opens it again, reveals the discount, and Continue opens the offer. Closing the offer returns there — never to a plans list. Opening uses haptics via `src/lib/haptics.ts` (`@capacitor/haptics`): a buzz on each shake swing and a success buzz on opening; no-ops on web. Dev-only preview at `/dev/gift` (`?opened` for the returning state; excluded from release builds).
 - `usePromptLimit` (`MONTHLY_PROMPT_LIMIT = 30`) is unrelated to the paywall gate — it's a separate monthly rate limit on AI calls that applies to subscribers, to control API cost. It is only a UX mirror; the enforced limit is server-side (`MONTHLY_LIMITS` in `supabase/functions/_shared/guard.ts`, keep `chat` in sync).
 - RevenueCat (`@revenuecat/purchases-capacitor` + `@revenuecat/purchases-capacitor-ui`, both pinned to the same version — currently `13.5.1`) handles IAP and the paywall UI; product ID `com.mayotti.subscription.monthly`; entitlement identifier `premium`.
@@ -106,6 +106,10 @@ The app uses localStorage-backed custom hooks rather than a global store:
 - `useOnboarding` — First-run onboarding completion flag and collected answers
 
 Budget recalculates from the expense list on each update (rather than storing a running total) to prevent drift.
+
+Notifications/toasts: one style app-wide. Use `useToast` (`@/hooks/use-toast`) or the sonner-shaped adapter `toast` from `@/lib/notify` (success/error/info/loading, `id` to update in place); both render through `AppToaster`. Don't mount sonner's Toaster.
+
+Settings → Subscription reads the real plan, price and renewal date via `useSubscriptionDetails` (RevenueCat customer info + App Store product price); never hardcode prices.
 
 ### Mobile-Specific Considerations
 

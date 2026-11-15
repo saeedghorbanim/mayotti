@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, type Variants } from "framer-motion";
 import { Eye, Gauge, PiggyBank, RefreshCw, LucideIcon } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/notify";
 import { Button } from "@/components/ui/button";
 import { OnboardingShell } from "@/components/onboarding/OnboardingShell";
 import { WelcomeSlide } from "@/components/onboarding/steps/WelcomeSlide";
@@ -217,7 +217,7 @@ const ONBOARDING_STEPS: OnboardingStep[] = [
 const QUESTION_INSIGHT_STEPS = ONBOARDING_STEPS.filter((s) => s.kind === "question" || s.kind === "insight");
 const GETSTARTED_INDEX = ONBOARDING_STEPS.findIndex((s) => s.kind === "getstarted");
 
-const pageVariants = {
+const pageVariants: Variants = {
   enter: (dir: number) => ({ opacity: 0, x: dir * 24 }),
   center: { opacity: 1, x: 0, transition: { duration: 0.25, ease: "easeOut" } },
   exit: (dir: number) => ({ opacity: 0, x: dir * -24, transition: { duration: 0.15 } }),
@@ -275,7 +275,7 @@ const Onboarding = ({ answers, updateAnswer, onComplete }: OnboardingProps) => {
 
   const canContinue = step.kind !== "question" || !step.required || hasAnswer(answers[step.id]);
 
-  const questionInsightIndex = QUESTION_INSIGHT_STEPS.indexOf(step);
+  const questionInsightIndex = QUESTION_INSIGHT_STEPS.indexOf(step as (typeof QUESTION_INSIGHT_STEPS)[number]);
   const progress =
     questionInsightIndex >= 0 ? { current: questionInsightIndex + 1, total: QUESTION_INSIGHT_STEPS.length } : undefined;
   const dots = step.kind === "welcome" ? { count: 3, activeIndex: currentIndex } : undefined;
@@ -287,7 +287,7 @@ const Onboarding = ({ answers, updateAnswer, onComplete }: OnboardingProps) => {
       case "getstarted":
         return <GetStartedSlide />;
       case "question":
-        return <QuestionSlide config={step} value={answers[step.id]} onChange={(value) => updateAnswer(step.id, value)} />;
+        return <QuestionSlide config={step} value={answers[step.id]} onChange={(value) => updateAnswer(step.id, value as never)} />;
       case "insight":
         return (
           <InsightSlide title={step.title} subtitle={step.subtitle}>
