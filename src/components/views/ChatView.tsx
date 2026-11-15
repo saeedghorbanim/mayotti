@@ -9,6 +9,7 @@ import { BudgetTracker } from "@/components/budget/BudgetTracker";
 import { BudgetLimit, Expense } from "@/hooks/useLocalStorage";
 import { usePromptLimit, MONTHLY_PROMPT_LIMIT } from "@/hooks/usePromptLimit";
 import { Progress } from "@/components/ui/progress";
+import { LimitReachedCard } from "@/components/chat/LimitReachedCard";
 import { AiRequestError, aiRequestHeaders, functionUrl, toAiRequestError, describeError } from "@/lib/aiRequest";
 
 interface ChatViewProps {
@@ -16,6 +17,7 @@ interface ChatViewProps {
   onAddExpense: (expense: Omit<Expense, 'id' | 'created_at'>) => void;
   onSetBudgetLimit: (limitAmount: number) => void;
   onShowPaywall: () => void;
+  onOpenTab?: (tab: "stats" | "history") => void;
 }
 
 interface Message {
@@ -68,7 +70,7 @@ function parseBudgetFromResponse(text: string): { action: 'set' | 'add'; amount:
   return null;
 }
 
-export const ChatView = ({ budget, onAddExpense, onSetBudgetLimit, onShowPaywall }: ChatViewProps) => {
+export const ChatView = ({ budget, onAddExpense, onSetBudgetLimit, onShowPaywall, onOpenTab }: ChatViewProps) => {
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -85,9 +87,21 @@ export const ChatView = ({ budget, onAddExpense, onSetBudgetLimit, onShowPaywall
     getRemainingPrompts,
     getUsagePercentage,
     incrementPromptCount,
-    getLimitReachedMessage,
     usageData
   } = usePromptLimit();
+
+  // The server's count wins if it says the month's AI messages are used up.
+  const [serverLimited, setServerLimited] = useState(false);
+  const [limitNudge, setLimitNudge] = useState(0);
+  const limitReached = hasReachedLimit() || serverLimited;
+  const resetDate = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 1);
+  const resetLabel = resetDate.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+
+  // Subscribers who used this month's messages see a friendly card, never the paywall.
+  const showLimitCard = () => {
+    setLimitNudge((n) => n + 1);
+    setTimeout(() => messagesEndRef.current?.scrollIntoView({ behavior: "smooth" }), 50);
+  };
 
   // Sync local budget when parent's budget prop changes (e.g. on tab switch / remount)
   useEffect(() => {
@@ -171,13 +185,12 @@ export const ChatView = ({ budget, onAddExpense, onSetBudgetLimit, onShowPaywall
   };
 
   const handleSend = async () => {
-    if ((!input.trim() && !selectedImage) || isLoading) return;
-
-    // Check monthly prompt limit (the paywall already ensures only subscribers reach this screen)
-    if (hasReachedLimit()) {
-      toast({ title: "Monthly limit reached", description: getLimitReachedMessage() });
+    // Monthly AI limit (only subscribers reach this screen, so never the paywall here)
+    if (limitReached) {
+      showLimitCard();
       return;
     }
+    if ((!input.trim() && !selectedImage) || isLoading) return;
 
     let messageContent = input;
     let receiptData = null;
@@ -356,7 +369,8 @@ export const ChatView = ({ budget, onAddExpense, onSetBudgetLimit, onShowPaywall
         return;
       }
       if (error instanceof AiRequestError && error.status === 429) {
-        toast({ title: "Monthly limit reached", description: getLimitReachedMessage() });
+        setServerLimited(true);
+        showLimitCard();
         return;
       }
       toast({
@@ -370,6 +384,10 @@ export const ChatView = ({ budget, onAddExpense, onSetBudgetLimit, onShowPaywall
   };
 
   const handleMicClick = () => {
+    if (!isRecording && limitReached) {
+      showLimitCard();
+      return;
+    }
     if (isRecording) {
       stopRecording();
     } else {
@@ -392,7 +410,9 @@ export const ChatView = ({ budget, onAddExpense, onSetBudgetLimit, onShowPaywall
               <MessageCircle className="w-3 h-3" />
               <span>Monthly messages</span>
             </div>
-            <span>{usageData.count}/{MONTHLY_PROMPT_LIMIT}</span>
+            <span className={cn(limitReached && "font-bold text-primary")}>
+              {limitReached ? `All used · back ${resetLabel}` : `${usageData.count}/${MONTHLY_PROMPT_LIMIT}`}
+            </span>
           </div>
           <Progress 
             value={getUsagePercentage()} 
@@ -451,6 +471,14 @@ export const ChatView = ({ budget, onAddExpense, onSetBudgetLimit, onShowPaywall
             </div>
           </div>
         )}
+        {limitReached && (
+          <LimitReachedCard
+            limit={MONTHLY_PROMPT_LIMIT}
+            resetDate={resetDate}
+            nudgeKey={limitNudge}
+            onOpenTab={onOpenTab}
+          />
+        )}
         <div ref={messagesEndRef} />
       </div>
 
@@ -492,7 +520,7 @@ export const ChatView = ({ budget, onAddExpense, onSetBudgetLimit, onShowPaywall
         >
           <button
             type="button"
-            onClick={() => fileInputRef.current?.click()}
+            onClick={() => (limitReached ? showLimitCard() : fileInputRef.current?.click())}
             disabled={isLoading || isAnalyzingImage}
             aria-label="Scan a receipt"
             className={cn(
@@ -516,9 +544,11 @@ export const ChatView = ({ budget, onAddExpense, onSetBudgetLimit, onShowPaywall
               aria-label="Message mayotti"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder={isRecording ? "Listening…" : "Spent $12 on lunch…"}
+              placeholder={
+                isRecording ? "Listening…" : limitReached ? `AI messages are back ${resetLabel}` : "Spent $12 on lunch…"
+              }
               className="flex-1 border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 px-0 text-[16px] h-11"
-              disabled={isLoading || isRecording}
+              disabled={isLoading || isRecording || limitReached}
             />
             <button
               type="button"

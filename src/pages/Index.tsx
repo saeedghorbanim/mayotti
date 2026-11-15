@@ -60,6 +60,7 @@ const Index = () => {
             onAddExpense={addExpense}
             onSetBudgetLimit={setBudgetLimit}
             onShowPaywall={handleShowPaywall}
+            onOpenTab={setActiveTab}
           />
         )}
         {activeTab === "stats" && <StatsView expenses={expenses} />}
