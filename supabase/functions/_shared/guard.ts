@@ -18,7 +18,7 @@ export type AiRequestKind = 'chat' | 'receipt' | 'transcribe';
 // A receipt send also triggers a chat call, and voice is transcribed before it is
 // sent as chat, so those get their own (looser) caps rather than sharing chat's.
 const MONTHLY_LIMITS: Record<AiRequestKind, number> = {
-  chat: 30,
+  chat: 50,
   receipt: 30,
   transcribe: 60,
 };

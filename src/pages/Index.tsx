@@ -13,7 +13,7 @@ import { checkBalanceAlert, initReminders } from "@/lib/reminders";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("chat");
-  const { expenses, budget, deleteExpense, addExpense, setBudgetLimit } = useLocalStorage();
+  const { expenses, budget, deleteExpense, addExpense, updateExpense, setBudgetLimit } = useLocalStorage();
   const { setSubscriptionActive } = useAppUsage();
   const { presentPaywall } = usePaywall(setSubscriptionActive);
   const { answers } = useOnboarding();
@@ -58,6 +58,7 @@ const Index = () => {
           <ChatView
             budget={budget}
             onAddExpense={addExpense}
+            onUpdateExpense={updateExpense}
             onSetBudgetLimit={setBudgetLimit}
             onShowPaywall={handleShowPaywall}
             onOpenTab={setActiveTab}

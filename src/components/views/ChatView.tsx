@@ -10,11 +10,13 @@ import { BudgetLimit, Expense } from "@/hooks/useLocalStorage";
 import { usePromptLimit, MONTHLY_PROMPT_LIMIT } from "@/hooks/usePromptLimit";
 import { Progress } from "@/components/ui/progress";
 import { LimitReachedCard } from "@/components/chat/LimitReachedCard";
+import { CategoryPicker, PICKABLE_CATEGORIES } from "@/components/chat/CategoryPicker";
 import { AiRequestError, aiRequestHeaders, functionUrl, toAiRequestError, describeError } from "@/lib/aiRequest";
 
 interface ChatViewProps {
   budget: BudgetLimit | null;
-  onAddExpense: (expense: Omit<Expense, 'id' | 'created_at'>) => void;
+  onAddExpense: (expense: Omit<Expense, 'id' | 'created_at'>) => Expense;
+  onUpdateExpense: (id: string, changes: Partial<Pick<Expense, 'description' | 'category'>>) => void;
   onSetBudgetLimit: (limitAmount: number) => void;
   onShowPaywall: () => void;
   onOpenTab?: (tab: "stats" | "history") => void;
@@ -26,6 +28,8 @@ interface Message {
   role: "user" | "assistant";
   timestamp: Date;
   image?: string;
+  /** Expenses the AI logged without knowing what they were for; the user taps a category. */
+  picks?: { expenseId: string; amount: number; chosen?: string }[];
 }
 
 // Only the most recent turns are sent to the AI, which keeps requests within the
@@ -70,7 +74,7 @@ function parseBudgetFromResponse(text: string): { action: 'set' | 'add'; amount:
   return null;
 }
 
-export const ChatView = ({ budget, onAddExpense, onSetBudgetLimit, onShowPaywall, onOpenTab }: ChatViewProps) => {
+export const ChatView = ({ budget, onAddExpense, onUpdateExpense, onSetBudgetLimit, onShowPaywall, onOpenTab }: ChatViewProps) => {
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -314,19 +318,33 @@ export const ChatView = ({ budget, onAddExpense, onSetBudgetLimit, onShowPaywall
 
       // After streaming, check for expense tags and save locally
       const expenses = parseExpensesFromResponse(fullResponseForParsing);
+      const wantsPick = fullResponseForParsing.includes("[PICK_CATEGORY]");
       if (expenses.length > 0 && !receiptData) {
+        const picks: NonNullable<Message["picks"]> = [];
         for (const expense of expenses) {
-          onAddExpense({
+          const saved = onAddExpense({
             description: expense.description,
             amount: expense.amount,
             category: expense.category,
             store: null,
           });
+          if (wantsPick && expense.category.toLowerCase() === "other" && saved) {
+            picks.push({ expenseId: saved.id, amount: expense.amount });
+          }
+        }
+        if (picks.length > 0) {
+          // Show free tap-to-pick categories under this reply instead of another AI round-trip
+          setMessages((prev) =>
+            prev.map((m, i) => (i === prev.length - 1 && m.role === "assistant" ? { ...m, picks } : m))
+          );
         }
         if (expenses.length === 1) {
           toast({
             title: "Expense saved",
-            description: `$${expenses[0].amount.toFixed(2)} for ${expenses[0].description}`,
+            description:
+              picks.length > 0
+                ? `$${expenses[0].amount.toFixed(2)} · pick a category below`
+                : `$${expenses[0].amount.toFixed(2)} for ${expenses[0].description}`,
           });
         } else {
           const total = expenses.reduce((sum, e) => sum + e.amount, 0);
@@ -368,7 +386,7 @@ export const ChatView = ({ budget, onAddExpense, onSetBudgetLimit, onShowPaywall
         onShowPaywall();
         return;
       }
-      if (error instanceof AiRequestError && error.status === 429) {
+      if (error instanceof AiRequestError && error.status === 429 && error.code === "quota_exceeded") {
         setServerLimited(true);
         showLimitCard();
         return;
@@ -381,6 +399,19 @@ export const ChatView = ({ budget, onAddExpense, onSetBudgetLimit, onShowPaywall
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Free: updates the saved expense on the device, no AI message used
+  const handlePickCategory = (messageId: string, expenseId: string, categoryId: string) => {
+    const label = PICKABLE_CATEGORIES.find((c) => c.id === categoryId)?.label ?? "Other";
+    onUpdateExpense(expenseId, { category: categoryId, description: label.toLowerCase() });
+    setMessages((prev) =>
+      prev.map((m) =>
+        m.id === messageId
+          ? { ...m, picks: m.picks?.map((p) => (p.expenseId === expenseId ? { ...p, chosen: categoryId } : p)) }
+          : m
+      )
+    );
   };
 
   const handleMicClick = () => {
@@ -432,8 +463,8 @@ export const ChatView = ({ budget, onAddExpense, onSetBudgetLimit, onShowPaywall
           <div
             key={message.id}
             className={cn(
-              "flex",
-              message.role === "user" ? "justify-end" : "justify-start"
+              "flex flex-col",
+              message.role === "user" ? "items-end" : "items-start"
             )}
           >
             <div
@@ -455,9 +486,18 @@ export const ChatView = ({ budget, onAddExpense, onSetBudgetLimit, onShowPaywall
                 {message.content
                   .replace(/\[EXPENSE:[\d.]+:[^:]+:[^\]]+\]/g, '')
                   .replace(/\[BUDGET:(set|add):[\d.]+\]/g, '')
+                  .replace(/\[PICK_CATEGORY\]/g, '')
                   .trim()}
               </p>
             </div>
+            {message.picks?.map((pick) => (
+              <CategoryPicker
+                key={pick.expenseId}
+                amount={pick.amount}
+                chosen={pick.chosen}
+                onPick={(categoryId) => handlePickCategory(message.id, pick.expenseId, categoryId)}
+              />
+            ))}
           </div>
         ))}
         {isLoading && messages[messages.length - 1]?.role === "user" && (

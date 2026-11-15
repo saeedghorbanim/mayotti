@@ -8,7 +8,7 @@ interface PromptUsageData {
   year: number;
 }
 
-export const MONTHLY_PROMPT_LIMIT = 30;
+export const MONTHLY_PROMPT_LIMIT = 50; // keep in sync with MONTHLY_LIMITS.chat in supabase/functions/_shared/guard.ts
 
 export const usePromptLimit = () => {
   const [usageData, setUsageData] = useState<PromptUsageData>({

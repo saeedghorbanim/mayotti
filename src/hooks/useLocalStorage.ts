@@ -153,27 +153,52 @@ export const useLocalStorage = () => {
     setExpenses(newExpenses);
   };
 
+  // Read the latest saved list, so several adds in a row (e.g. two expenses in one
+  // chat message) don't overwrite each other through a stale render's state.
+  const readStoredExpenses = (): Expense[] => {
+    try {
+      const parsed = JSON.parse(localStorage.getItem(EXPENSES_KEY) || '[]');
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return expenses;
+    }
+  };
+
+  const readStoredBudget = (): BudgetLimit | null => {
+    try {
+      return JSON.parse(localStorage.getItem(BUDGET_KEY) || 'null');
+    } catch {
+      return budget;
+    }
+  };
+
   // Add expense
   const addExpense = (expense: Omit<Expense, 'id' | 'created_at'>) => {
     const newExpense: Expense = {
       ...expense,
-      id: Date.now().toString(),
+      id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
       created_at: new Date().toISOString(),
     };
-    
-    const updatedExpenses = [...expenses, newExpense];
-    saveExpenses(updatedExpenses);
+
+    saveExpenses([...readStoredExpenses(), newExpense]);
 
     // Auto-update budget spending
-    if (budget) {
-      const updatedBudget = {
-        ...budget,
-        current_spent: budget.current_spent + expense.amount,
-      };
-      saveBudget(updatedBudget);
+    const currentBudget = readStoredBudget();
+    if (currentBudget) {
+      saveBudget({
+        ...currentBudget,
+        current_spent: currentBudget.current_spent + expense.amount,
+      });
     }
 
     return newExpense;
+  };
+
+  // Change an expense's details (e.g. the category picked after the AI logged it)
+  const updateExpense = (id: string, changes: Partial<Pick<Expense, 'description' | 'category' | 'store'>>) => {
+    const current = readStoredExpenses();
+    if (!current.some((e) => e.id === id)) return;
+    saveExpenses(current.map((e) => (e.id === id ? { ...e, ...changes } : e)));
   };
 
   // Delete expense
@@ -229,6 +254,7 @@ export const useLocalStorage = () => {
     expenses,
     budget,
     addExpense,
+    updateExpense,
     deleteExpense,
     setBudgetLimit,
     saveBudget,

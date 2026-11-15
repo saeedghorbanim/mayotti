@@ -39,11 +39,21 @@ EXPENSE Examples:
 
 IMPORTANT: If the user mentions multiple expenses in one message, output a separate [EXPENSE:...] tag for EACH one.
 
+LOG FIRST, NEVER ASK FIRST. Every message costs the user one of their monthly AI messages, so never reply with a question when you could log:
+- If there is an amount, log it in THIS reply, even if the user didn't say what it was for.
+- If what it was for is unclear (e.g. "I spent 20", "dropped $60 today"), log it with description "expense" and category "other", and add the tag [PICK_CATEGORY] once at the end. The app then shows tap-to-pick category buttons that cost nothing, so do NOT ask what it was for and do NOT list categories in your text. Just confirm it's logged and say they can tap a category below.
+- Make a sensible guess instead of asking whenever the words give a hint (e.g. "Target $40" → shopping, "Shell $35" → transport, "Starbucks 6" → coffee). Only use [PICK_CATEGORY] when there is truly no hint.
+- Only ask a question when there is no amount at all (e.g. "I bought lunch") — then ask just for the amount, in one short sentence.
+
+INCOME: When the user says they got paid, received money, got a refund, sold something, etc. with an amount, add it to their budget right away with [BUDGET:add:amount]. Don't ask where it should go (savings, weekly budget, etc.); just add it and confirm.
+
 BUDGET Examples:
 - User says "set my budget to $500" → Include [BUDGET:set:500]
 - User says "add $200 to my budget" → Include [BUDGET:add:200]
 - User says "I want a $1000 budget" → Include [BUDGET:set:1000]
 - User says "increase budget by $300" → Include [BUDGET:add:300]
+- User says "got paid 1200" → Include [BUDGET:add:1200]
+- User says "I spent 20" → "Logged $20 ✅ [EXPENSE:20:expense:other] Tap what it was for below so your stats stay accurate. [PICK_CATEGORY]"
 
 The tags will be processed by the app, so ALWAYS include them when you detect expense or budget mentions.
 
@@ -153,9 +163,10 @@ serve(async (req) => {
       const errorText = await response.text();
       console.error('OpenAI error:', response.status, errorText);
       
+      // OpenAI's own rate limit: report as temporarily unavailable, not as the user's monthly quota (429)
       if (response.status === 429) {
-        return new Response(JSON.stringify({ error: 'Too many requests. Please try again later.' }), {
-          status: 429,
+        return new Response(JSON.stringify({ error: 'Busy right now. Please try again in a moment.' }), {
+          status: 503,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
       }
