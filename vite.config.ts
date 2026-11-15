@@ -6,7 +6,7 @@ import path from "path";
 export default defineConfig(() => ({
   base: "./",
   server: {
-    host: "::",
+    host: "localhost", // only this computer; use --host to test from a phone on Wi-Fi
     port: 8080,
   },
   plugins: [react()],
