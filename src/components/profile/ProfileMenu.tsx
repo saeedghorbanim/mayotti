@@ -66,7 +66,7 @@ export const ProfileMenu = ({ onShowPaywall }: ProfileMenuProps) => {
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
-            <a href="https://mayotti.com/terms" target="_blank" rel="noopener noreferrer" className="flex items-center">
+            <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/" target="_blank" rel="noopener noreferrer" className="flex items-center">
               <FileText className="mr-2 h-4 w-4" />
               <span>Terms of Use</span>
             </a>
